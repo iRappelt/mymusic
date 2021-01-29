@@ -1,9 +1,6 @@
 package com.irappelt.mymusic.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -11,12 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.alibaba.fastjson.JSON;
 import com.irappelt.mymusic.common.WebResponse;
-import com.irappelt.mymusic.model.User;
-import com.irappelt.mymusic.service.IMyMusicService;
-import com.irappelt.mymusic.service.IUserService;
-import com.irappelt.mymusic.service.impl.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

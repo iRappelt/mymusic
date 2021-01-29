@@ -1,67 +1,44 @@
-/** 
-* 
-*
-*
-*/
-
 package com.irappelt.mymusic.service.impl;
+
+import com.irappelt.mymusic.dao.MusicLinkRespository;
+import com.irappelt.mymusic.model.po.MusicLink;
+import com.irappelt.mymusic.service.MusicLinkService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import javax.annotation.Resource;
+/**
+ * @author: huaiyu
+ * @date: Created in 2021/1/29 13:51
+ */
+@Service
+public class MusicLinkServiceImpl implements MusicLinkService {
+
+    @Autowired
+    private MusicLinkRespository musicLinkRespository;
 
 
-import com.irappelt.mymusic.common.AbstractService;
-import com.irappelt.mymusic.common.IOperations;
-import com.irappelt.mymusic.mapper.IMusicLinkMapper;
-import com.irappelt.mymusic.model.MusicLink;
-import com.irappelt.mymusic.service.IMusicLinkService;
-import org.springframework.stereotype.Service;
+    @Override
+    public List<MusicLink> songSearch(String condition) {
+        return musicLinkRespository.queryAllBySongNameContainingOrSingerContaining(condition, condition);
+    }
 
+    @Override
+    public List<MusicLink> getMusicList(int pageNo, int pageSize, String keyword, boolean isAsc, String orderField) {
 
-@Service("musicLinkServiceImpl")
-public class MusicLinkServiceImpl extends AbstractService<MusicLink, MusicLink> implements IMusicLinkService {
-
-	public MusicLinkServiceImpl() {
-		this.setTableName("musiclink");
-	}
-
-	@Resource
-	private IMusicLinkMapper musicLinkMapper;
-
-	@Override
-	protected IOperations<MusicLink, MusicLink> getMapper() {
-		return musicLinkMapper;
-	}
-
-	@Override
-	public void setTableName(String tableName) {
-		this.tableName = tableName;
-	}
-
-
-	@Override
-	public List<MusicLink> songSearch(String songName) {
-		return musicLinkMapper.songSearch(songName);
-	}
-
-	@Override
-	public int getUserId(String user_name, String user_password) {
-		return musicLinkMapper.getUserId(user_name, user_password);
-	}
-
-	@Override
-	public void insertSongCollection(int song_id, int userId) {
-		musicLinkMapper.insertSongCollection(song_id, userId);
-	}
-
-	@Override
-	public int judgeSong(String songName, int userId) {
-		return musicLinkMapper.judgeSong(songName, userId);
-	}
-
-	@Override
-	public void insert(MusicLink entity) {
-
-	}
+        Sort sort;
+        if (isAsc) {
+            sort = Sort.by(Sort.Direction.ASC, orderField);
+        } else {
+            sort = Sort.by(Sort.Direction.DESC, orderField);
+        }
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<MusicLink> all = musicLinkRespository.findAll(pageable);
+        return all.getContent();
+    }
 }

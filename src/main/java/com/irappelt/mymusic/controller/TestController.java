@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
 import com.irappelt.mymusic.common.WebResponse;
-import com.irappelt.mymusic.model.Test;
-import com.irappelt.mymusic.service.ITestService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

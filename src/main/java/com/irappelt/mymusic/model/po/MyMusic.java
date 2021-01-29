@@ -17,24 +17,12 @@ import javax.persistence.Table;
 public class MyMusic {
 
     @Id
-    @Column(name = "KeyId")
-    private String keyId;
-
-    @Column(name = "SongName")
-    private String songName;
-
-    @Column(name = "Singer")
-    private String singer;
-
-    @Column(name = "SongLink")
-    private String songLink;
-
-    @Column(name = "LyricLink")
-    private String lyricLink;
-
-    @Column(name = "ImageLink")
-    private String imageLink;
+    @Column(name = "CollectId")
+    private String collectId;
 
     @Column(name = "UserId")
     private String userId;
+
+    @Column(name = "SongId")
+    private String songId;
 }

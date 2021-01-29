@@ -7,13 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.irappelt.mymusic.common.WebResponse;
-import com.irappelt.mymusic.model.MyMusic;
-import com.irappelt.mymusic.service.IMyMusicService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
