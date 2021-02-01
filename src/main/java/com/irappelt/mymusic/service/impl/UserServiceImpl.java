@@ -38,6 +38,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User addUser(String userName, String userPassword) {
+        if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(userPassword)) {
+            return null;
+        }
         User user = new User();
         user.setUserId(UUID.randomUUID().toString().replaceAll("-", ""));
         user.setUserName(userName);
@@ -61,6 +64,11 @@ public class UserServiceImpl implements UserService {
             return userRepository.save(user);
         }
         return null;
+    }
+
+    @Override
+    public boolean isRepeatUser(String userName) {
+        return this.getUser(userName, null)!=null;
     }
 
 

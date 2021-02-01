@@ -3,6 +3,7 @@ package com.irappelt.mymusic.dao;
 
 import com.irappelt.mymusic.model.po.MusicLink;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -13,4 +14,7 @@ import java.util.List;
 public interface MusicLinkRespository extends JpaRepository<MusicLink, String> {
 
     List<MusicLink> queryAllBySongNameContainingOrSingerContaining(String songName, String Singer);
+
+    @Query(value = "select count(songId) from MusicLink ;", nativeQuery = true)
+    int getAllCount();
 }

@@ -28,7 +28,7 @@ spring:
     database: mysql
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl

@@ -18,6 +18,20 @@ public interface MusicLinkService {
      */
     List<MusicLink> songSearch(String condition);
 
+    /**
+     * 获取榜单
+     * @param pageNo
+     * @param pageSize
+     * @param keyword
+     * @param isAsc
+     * @param orderField
+     * @return
+     */
     List<MusicLink> getMusicList(int pageNo, int pageSize, String keyword, boolean isAsc, String orderField);
 
+    /**
+     * 获取所有数据条数
+     * @return
+     */
+    int getAllCount();
 }

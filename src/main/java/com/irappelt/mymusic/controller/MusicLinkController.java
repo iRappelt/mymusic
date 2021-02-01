@@ -8,6 +8,12 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.irappelt.mymusic.common.WebResponse;
+import com.irappelt.mymusic.model.po.MusicLink;
+import com.irappelt.mymusic.model.po.MyMusic;
+import com.irappelt.mymusic.model.po.User;
+import com.irappelt.mymusic.service.MusicLinkService;
+import com.irappelt.mymusic.service.MyMusicService;
+import com.irappelt.mymusic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,11 +31,15 @@ public class MusicLinkController {
 	@Autowired
 	protected WebResponse webResponse;
 
-	@Resource
-	protected IMusicLinkService musicLinkService;
+	@Autowired
+	protected MusicLinkService musicLinkServiceImpl;
 
 	@Resource
-	protected MusicLinkServiceImpl musicLinkServiceImpl;
+	protected UserService userServiceImpl;
+
+	@Resource
+	protected MyMusicService myMusicServiceImpl;
+
 
 	/**
 	 * 从数据库中获取歌曲数据，在榜单中显示
@@ -42,21 +52,11 @@ public class MusicLinkController {
 			@RequestParam(defaultValue = "ml_id", required = false) String order,
 			@RequestParam(defaultValue = "desc", required = false) String desc) {
 
-		LinkedHashMap<String, String> condition = new LinkedHashMap<>();
 		Map<Object, Object> map = new HashMap<>(16);
-		if (keyword != null && keyword.length() > 0) {
-			String buf = "(test_name like '%" + keyword + "%' or info like '%" + keyword + "%' or other like '%" + keyword + "%')";
-			condition.put(buf, "and");
-		}
-		if (condition.size() > 0) {
-			condition.put(condition.entrySet().iterator().next().getKey(), "");
-		}
-		int count = this.musicLinkService.getCount(condition, null);
+
+		int count = musicLinkServiceImpl.getAllCount();
 		map.put("total", count);
-		if (order != null && order.length() > 0 & "desc".equals(desc)) {
-			order = order + " desc";
-		}
-		List<MusicLink> list = this.musicLinkService.getList(condition, pageNo, pageSize, order, null);
+		List<MusicLink> list = musicLinkServiceImpl.getMusicList(pageNo, pageSize, null, false, order);
 		if (list != null && list.size() > 0) {
 			map.put("list", list);
 			return webResponse.getWebResponse(200, "根据条件获取分页数据成功", map);
@@ -77,11 +77,10 @@ public class MusicLinkController {
 
 		List<MusicLink> list = this.musicLinkServiceImpl.songSearch(songName);
 		map.put("total", list.size());
+		map.put("list", list);
 		if (list.size() > 0) {
-			map.put("list", list);
 			return webResponse.getWebResponse(200, "根据条件获取分页数据成功", map);
 		} else {
-			map.put("list", list);
 			return webResponse.getWebResponse(202, "no record!", map);
 		}
 	}
@@ -91,21 +90,21 @@ public class MusicLinkController {
 	 */
 	@RequestMapping(value = "/addMusicCollect", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public WebResponse addMusicCollect(@RequestParam(required = false) int song_id, @RequestParam(required = false) String user_name,
+	public WebResponse addMusicCollect(@RequestParam(required = false) String song_id, @RequestParam(required = false) String user_name,
 			@RequestParam(required = false) String user_password, @RequestParam(required = false) String songName) {
 
 		WebResponse webResponse = new WebResponse();
 
-		String statusMsg = "";
-		int statusCode = 200;
-		int userId = musicLinkServiceImpl.getUserId(user_name, user_password);
-		int myId = this.musicLinkService.judgeSong(songName, userId);
-		if (myId > 0) {
-			statusCode = 201;
-			statusMsg = "已收藏,请不要重复收藏！";
+		User user = userServiceImpl.getUser(user_name, user_password);
+		boolean isRepeat = myMusicServiceImpl.myMusicIsRepeat(song_id, user.getUserId());
+		if (isRepeat) {
+			return webResponse.getWebResponse(201, "已收藏,请不要重复收藏！", null);
 		} else {
-			this.musicLinkService.insertSongCollection(song_id, userId);
+			MyMusic myMusic = new MyMusic();
+			myMusic.setUserId(user.getUserId());
+			myMusic.setSongId(song_id);
+			myMusicServiceImpl.addToMyMusic(myMusic);
+			return webResponse.getWebResponse(200, "收藏成功", null);
 		}
-		return webResponse.getWebResponse(statusCode, statusMsg, null);
 	}
 }

@@ -21,4 +21,6 @@ public interface UserService {
     User addUser(String userName, String userPassword);
 
     User updateUser(String userId, String newUserName, String newPassword);
+
+    boolean isRepeatUser(String userName);
 }

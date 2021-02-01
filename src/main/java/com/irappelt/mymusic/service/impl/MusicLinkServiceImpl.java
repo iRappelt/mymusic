@@ -41,4 +41,9 @@ public class MusicLinkServiceImpl implements MusicLinkService {
         Page<MusicLink> all = musicLinkRespository.findAll(pageable);
         return all.getContent();
     }
+
+    @Override
+    public int getAllCount() {
+        return musicLinkRespository.getAllCount();
+    }
 }
