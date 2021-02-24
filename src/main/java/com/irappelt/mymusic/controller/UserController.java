@@ -5,14 +5,12 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.irappelt.mymusic.aop.annotation.ExceptionCapture;
 import com.irappelt.mymusic.common.WebResponse;
 import com.irappelt.mymusic.model.po.User;
-import com.irappelt.mymusic.service.MyMusicService;
 import com.irappelt.mymusic.service.UserService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/user")
+@ExceptionCapture
 public class UserController {
 
     @Autowired
@@ -54,7 +53,7 @@ public class UserController {
         paramMap.put("user_name", user_name);
         paramMap.put("user_password", user_password);
 
-        return webResponse.getWebResponse(200, "登录成功", paramMap);
+        return webResponse.getWebResponseUserId(200, "登录成功", paramMap, user.getUserId());
 
     }
 

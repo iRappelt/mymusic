@@ -108,7 +108,7 @@
 <audio id="audio" src=""></audio>
 <script src="js/index.js"></script>
 <script>
-    //工作原理代码见inde.js
+    //工作原理代码见index.js
     getList2();
 
     function getList2() {
@@ -128,10 +128,10 @@
                         var a = i + 1;
                         str += '<li class="list_music">\n' +
                             '                        <div class="list_number">' + a + '</div>\n' +
-                            '                        <div id= sName' + i + ' class="list_name" style="cursor: pointer;">' + data.data.list[i].my_songName +
+                            '                        <div id= sName' + i + ' class="list_name" style="cursor: pointer;">' + data.data.list[i].songName +
                             '<span class="glyphicon glyphicon-trash" id=sFav' + i + ' style="color: rgba(255,255,255,0.5);float: right;margin-right: 20px;cursor: pointer;"></span>' +
                             '                        </div>\n' +
-                            '                        <div class="list_singer">' + data.data.list[i].my_singer + '</div>\n' +
+                            '                        <div class="list_singer">' + data.data.list[i].singer + '</div>\n' +
                             '                        <div class="list_time"><span class="time1">4:36</span>\n' +
                             '                    </li>';
 
@@ -155,16 +155,16 @@
 
                     function fn(j) {
 
-                        $.cookie("song_link", data.data.list[j].my_songLink, {expires: 7, path: "/"});
-                        $.cookie("song_name", data.data.list[j].my_songName, {expires: 7, path: "/"});
-                        $.cookie("song_singer", data.data.list[j].my_singer, {expires: 7, path: "/"});
-                        $.cookie("song_photo", data.data.list[j].my_photoLink, {expires: 7, path: "/"});
+                        $.cookie("song_link", data.data.list[j].songLink, {expires: 7, path: "/"});
+                        $.cookie("song_name", data.data.list[j].songName, {expires: 7, path: "/"});
+                        $.cookie("song_singer", data.data.list[j].singer, {expires: 7, path: "/"});
+                        $.cookie("song_photo", data.data.list[j].imageLink, {expires: 7, path: "/"});
                         window.location.href = "/QQmusic.html";
                     }
 
                     function fn1(j) {
 
-                        $.cookie("ml_id", data.data.list[j].my_id, {expires: 7, path: "/"});
+                        $.cookie("ml_id", data.data.list[j].songId, {expires: 7, path: "/"});
                     }
 
 

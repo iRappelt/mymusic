@@ -17,4 +17,7 @@ public interface MusicLinkRespository extends JpaRepository<MusicLink, String> {
 
     @Query(value = "select count(songId) from MusicLink ;", nativeQuery = true)
     int getAllCount();
+
+    List<MusicLink> queryAllBySongIdIn(List<String> songIdList);
+
 }

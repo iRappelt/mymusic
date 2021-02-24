@@ -17,7 +17,7 @@
 
     <nav class="navmargin navbar navbar-default" role="navigation">
         <div class="shurukuang" style="padding: 20.6px 30px;">
-            <form class="bs-example" id="test" role="form" action="musicLink/getSongRearch" method="post">
+            <form class="bs-example" id="test" role="form" action="musicLink/getSongSearch" method="post">
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="input-group">
@@ -82,11 +82,13 @@
               rearchSong($('#test').attr("action"));
           }
       }); */
-    getList2("songName=" + $.cookie("song_search"));//调用getlist2方法
+    if ($.cookie("song_search") != null && $.cookie("song_search") != "") {
+        getList2("songName=" + $.cookie("song_search"));//调用getlist2方法
+    }
 
     function getList2(lll) {
         $.ajax({
-            url: "musicLink/getSongRearch",//后台地址
+            url: "musicLink/getSongSearch",//后台地址
             type: "POST",//post方式请求
             data: lll,//将数据通过lll在调用的时候传入
             success: function (data) {
@@ -101,9 +103,9 @@
 
                         str += '<tr>'
                             + '<td class="number111"  style="padding: 14px;border-bottom: 1px solid #eee; width: 100px;text-align: center;">' + a + '</td>'
-                            + '<td  style="padding: 14px;border-bottom: 1px solid #eee;width: 600px;text-align: center;"><a class=sName' + i + ' href="#">' + data.data.list[i].ml_songName + '</a>' +
+                            + '<td  style="padding: 14px;border-bottom: 1px solid #eee;width: 600px;text-align: center;"><a class=sName' + i + ' href="#">' + data.data.list[i].songName + '</a>' +
                             '<span class="glyphicon glyphicon-heart" id=sFav' + i + ' style="color: #eee;float: right;"></span></td>'
-                            + '<td style="padding: 14px;border-bottom: 1px solid #eee;width: 300px;text-align: center;"><a href="#">' + data.data.list[i].ml_singer + '</a></td>'
+                            + '<td style="padding: 14px;border-bottom: 1px solid #eee;width: 300px;text-align: center;"><a href="#">' + data.data.list[i].singer + '</a></td>'
                             + '</tr>';
 
                         function play(i) {
@@ -127,18 +129,18 @@
                     }
 
                     function fn(j) {
-                        console.log(data.data.list[j].ml_id);
-                        $.cookie("song_link", data.data.list[j].ml_songLink, {expires: 7, path: "/"});
-                        $.cookie("song_name", data.data.list[j].ml_songName, {expires: 7, path: "/"});
-                        $.cookie("song_singer", data.data.list[j].ml_singer, {expires: 7, path: "/"});
-                        $.cookie("song_photo", data.data.list[j].ml_photoLink, {expires: 7, path: "/"});
+                        console.log(data.data.list[j].songId);
+                        $.cookie("song_link", data.data.list[j].songLink, {expires: 7, path: "/"});
+                        $.cookie("song_name", data.data.list[j].songName, {expires: 7, path: "/"});
+                        $.cookie("song_singer", data.data.list[j].singer, {expires: 7, path: "/"});
+                        $.cookie("song_photo", data.data.list[j].imageLink, {expires: 7, path: "/"});
                         window.location.href = "/QQmusic.html";
                     }
 
                     function fn1(j) {
-                        console.log(data.data.list[j].ml_id);
-                        $.cookie("song_id", data.data.list[j].ml_id, {expires: 7, path: "/"});
-                        $.cookie("song_name", data.data.list[j].ml_songName, {expires: 7, path: "/"});
+                        console.log(data.data.list[j].songId);
+                        $.cookie("song_id", data.data.list[j].songId, {expires: 7, path: "/"});
+                        $.cookie("song_name", data.data.list[j].songName, {expires: 7, path: "/"});
                     }
 
 

@@ -12,7 +12,7 @@ import java.util.List;
 public interface MusicLinkService {
 
     /**
-     * 根据歌曲名/歌手/模糊搜索
+     * 根据 歌曲名/歌手 模糊搜索
      * @param condition condition
      * @return List<MusicLink>
      */
@@ -27,11 +27,25 @@ public interface MusicLinkService {
      * @param orderField
      * @return
      */
-    List<MusicLink> getMusicList(int pageNo, int pageSize, String keyword, boolean isAsc, String orderField);
+    List<MusicLink> getMusicList(int pageNo, int pageSize, boolean isAsc, String orderField);
 
     /**
      * 获取所有数据条数
      * @return
      */
     int getAllCount();
+
+    /**
+     * 根据歌曲ID列表获得歌曲信息列表
+     * @param songIdList
+     * @return
+     */
+    List<MusicLink> getMusicListByIdList(List<String> songIdList);
+
+    /**
+     * 添加歌曲信息
+     * @param musicLink
+     * @return
+     */
+    MusicLink addMusicLink(MusicLink musicLink);
 }

@@ -19,7 +19,7 @@ spring:
     name: MyMusic
   datasource:
     name: music
-    url: jdbc:mysql://42.192.72.219:23306/music?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    url: jdbc:mysql://42.192.72.219:23306/music?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
     type: com.alibaba.druid.pool.DruidDataSource

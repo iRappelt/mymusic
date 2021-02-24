@@ -29,7 +29,7 @@ public class MusicLinkServiceImpl implements MusicLinkService {
     }
 
     @Override
-    public List<MusicLink> getMusicList(int pageNo, int pageSize, String keyword, boolean isAsc, String orderField) {
+    public List<MusicLink> getMusicList(int pageNo, int pageSize, boolean isAsc, String orderField) {
 
         Sort sort;
         if (isAsc) {
@@ -45,5 +45,15 @@ public class MusicLinkServiceImpl implements MusicLinkService {
     @Override
     public int getAllCount() {
         return musicLinkRespository.getAllCount();
+    }
+
+    @Override
+    public List<MusicLink> getMusicListByIdList(List<String> songIdList) {
+        return musicLinkRespository.queryAllBySongIdIn(songIdList);
+    }
+
+    @Override
+    public MusicLink addMusicLink(MusicLink musicLink) {
+        return musicLinkRespository.save(musicLink);
     }
 }

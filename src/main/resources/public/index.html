@@ -415,18 +415,11 @@
 <div class="footer">
     <div class="links">
         <a hidefocus="true" href="#" target="_blank">开发者：</a>
-        <a hidefocus="true" href="https://github.com/linliquan" target="_blank">林李权</a>
-        <!--&lt;!&ndash;毕业答辩需要，暂时注释&ndash;&gt;-->
-        <!--<a hidefocus="true" target="_blank" href="#">黄施邕</a>-->
-        <!--<a hidefocus="true" target="_blank" href="#">吴先锋</a>-->
-        <!--<a hidefocus="true" href="#" target="_blank">姚源超</a>-->
-        <!--<a hidefocus="true" href="#" target="_blank">封南生</a>-->
-        <!--<a hidefocus="true" href="#" target="_blank">赵联岸</a>-->
-        <!--<a hidefocus="true" href="#" target="_blank">加入我们</a>-->
+        <a hidefocus="true" href="https://github.com/iRappelt/mymusic" target="_blank">iRappelt</a>
         <a hidefocus="true" href="#" target="_blank">广告合作</a>
     </div>
     <div class="copyright">
-        <p style="-moz-user-select: text;-webkit-user-select: text;-ms-user-select: text; user-select:text">如有侵权，请联系：liquan_101@163.com </p>
+        <p style="-moz-user-select: text;-webkit-user-select: text;-ms-user-select: text; user-select:text">如有侵权，请联系：iRappelt@163.com </p>
         <p>Copyright&nbsp;&nbsp;©&nbsp;&nbsp;2019&nbsp;&nbsp;版权所有&nbsp;&nbsp;
             <a hidefocus="true" href="http://www.beian.miit.gov.cn" target="_blank">桂ICP备19004924号</a>
             <a hidefocus="true" class="office-verification"
@@ -460,92 +453,87 @@
         }
     });//已在mymusic中注释
 
-
-    //
-    //
     //            获取榜单
+    // $.ajax({
+    //     url: "musicLink/getSongSearch",
+    //     type: "POST",
+    //     success: function (data) {
+    //         if (data.statusCode == "200") {
+    //             $(".jDian1").click(function () {//点击调用fn（）方法，并传入14，下方以此类推
+    //                 fn(14);
+    //             });
+    //             $(".jDian2").click(function () {
+    //                 fn(13);
+    //             });
+    //             $(".jDian3").click(function () {
+    //                 fn(12);
+    //             });
     //
+    //             $(".xQu1").click(function () {
+    //                 fn(11);
+    //             });
+    //             $(".xQu2").click(function () {
+    //                 fn(10);
+    //             });
+    //             $(".xQu3").click(function () {
+    //                 fn(9);
+    //             });
     //
-    $.ajax({
-        url: "musicLink/getSongRearch",
-        type: "POST",
-        success: function (data) {
-            if (data.statusCode == "200") {
-                $(".jDian1").click(function () {//点击调用fn（）方法，并传入14，下方以此类推
-                    fn(14);
-                });
-                $(".jDian2").click(function () {
-                    fn(13);
-                });
-                $(".jDian3").click(function () {
-                    fn(12);
-                });
-
-                $(".xQu1").click(function () {
-                    fn(11);
-                });
-                $(".xQu2").click(function () {
-                    fn(10);
-                });
-                $(".xQu3").click(function () {
-                    fn(9);
-                });
-
-                $(".rGe1").click(function () {
-                    fn(8);
-                });
-                $(".rGe2").click(function () {
-                    fn(7);
-                });
-                $(".rGe3").click(function () {
-                    fn(6);
-                });
-
-                $(".lXing1").click(function () {
-                    fn(5);
-                });
-                $(".lXing2").click(function () {
-                    fn(4);
-                });
-                $(".lXing3").click(function () {
-                    fn(3);
-                });
-
-                $(".rQi1").click(function () {
-                    fn(2);
-                });
-                $(".rQi2").click(function () {
-                    fn(1);
-                });
-                $(".rQi3").click(function () {
-                    fn(0);
-                });
-
-                $("#user_number").html($.cookie("user_id"));
-
-                function fn(i) {//调用方法，更改cookie的信息，并跳转到播放页面
-                    console.log(data.data.list[i].ml_id);
-                    $.cookie("song_link", data.data.list[i].ml_songLink, {expires: 7, path: "/"});
-                    $.cookie("song_name", data.data.list[i].ml_songName, {expires: 7, path: "/"});
-                    $.cookie("song_singer", data.data.list[i].ml_singer, {expires: 7, path: "/"});
-                    $.cookie("song_photo", data.data.list[i].ml_photoLink, {expires: 7, path: "/"});
-                    window.open("/QQmusic.html");
-                }
-            }
-        },
-        error: function (data) {
-            alert(JSON.stringify(data));
-        }
-    })
+    //             $(".rGe1").click(function () {
+    //                 fn(8);
+    //             });
+    //             $(".rGe2").click(function () {
+    //                 fn(7);
+    //             });
+    //             $(".rGe3").click(function () {
+    //                 fn(6);
+    //             });
+    //
+    //             $(".lXing1").click(function () {
+    //                 fn(5);
+    //             });
+    //             $(".lXing2").click(function () {
+    //                 fn(4);
+    //             });
+    //             $(".lXing3").click(function () {
+    //                 fn(3);
+    //             });
+    //
+    //             $(".rQi1").click(function () {
+    //                 fn(2);
+    //             });
+    //             $(".rQi2").click(function () {
+    //                 fn(1);
+    //             });
+    //             $(".rQi3").click(function () {
+    //                 fn(0);
+    //             });
+    //
+    //             $("#user_number").html($.cookie("user_id"));
+    //
+    //             function fn(i) {//调用方法，更改cookie的信息，并跳转到播放页面
+    //                 console.log(data.data.list[i].ml_id);
+    //                 $.cookie("song_link", data.data.list[i].songLink, {expires: 7, path: "/"});
+    //                 $.cookie("song_name", data.data.list[i].songName, {expires: 7, path: "/"});
+    //                 $.cookie("song_singer", data.data.list[i].singer, {expires: 7, path: "/"});
+    //                 $.cookie("song_photo", data.data.list[i].imageLink, {expires: 7, path: "/"});
+    //                 window.open("/QQmusic.html");
+    //             }
+    //         }
+    //     },
+    //     error: function (data) {
+    //         alert(JSON.stringify(data));
+    //     }
+    // })
 
     /* 音乐搜索 */
 
-    function getList2(lll) {
+    function getList2(songName) {
         test
         $.ajax({
-            url: "musicLink/getSongRearch",
+            url: "musicLink/getSongSearch",
             type: "POST",
-            data: lll,
+            data: songName,
             success: function (data) {
                 if (data.statusCode == "200") {
                     var search = document.getElementById("songName").value;
@@ -555,9 +543,8 @@
                     /* data.data.list.length对应respon.map.list.length */
                     for (var i = 0; i < data.data.list.length; i++) {
                         str += '<tr>'
-                            + '<td>' + data.data.list[i].ml_songName + '</td>'
-                            + '<td>' + data.data.list[i].ml_singer + '</td>'
-                            /* + '<td>' + data.data.list[i].ml_songLink + '</td>' */
+                            + '<td>' + data.data.list[i].songName + '</td>'
+                            + '<td>' + data.data.list[i].singer + '</td>'
                             + '</tr>';
                     }
                     $("table tbody").html(str);
@@ -571,11 +558,7 @@
         })
     }//已在mymusic中注释
 
-    //
-    //
-    //           数字时钟
-    //
-    //
+    /* 数字时钟 */
     var clock = new Vue({
         el: '#clock',
         data: {
@@ -591,7 +574,7 @@
         var cd = new Date();
         clock.time = zeroPadding(cd.getHours(), 2) + ':' + zeroPadding(cd.getMinutes(), 2) + ':' + zeroPadding(cd.getSeconds(), 2);
         clock.date = zeroPadding(cd.getFullYear(), 4) + '-' + zeroPadding(cd.getMonth() + 1, 2) + '-' + zeroPadding(cd.getDate(), 2) + ' ' + week[cd.getDay()];
-    };
+    }
 
     function zeroPadding(num, digit) {
         var zero = '';

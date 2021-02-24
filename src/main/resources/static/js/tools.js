@@ -119,7 +119,6 @@ function denglu(url, data) {                                                 //u
             } else {  //返回其他值执行的方法
                 alert(" " + data.statusMsg);
             }
-            ;
         },
         error: function (data) {//连接错误的执行方法
             alert(JSON.stringify(data));

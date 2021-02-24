@@ -9,7 +9,7 @@ public class WebResponse {
 	private String statusMsg;
 	private String version;
 	private String token;
-	private Integer userId;
+	private String userId;
 
 	/**
 	 * 结果
@@ -18,12 +18,12 @@ public class WebResponse {
 
 	private WebResponse instance;
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
+	public String getUserId() {
+		return userId;
 	}
 
-	public Integer getUserId() {
-		return userId;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public Integer getStatusCode() {
@@ -92,7 +92,7 @@ public class WebResponse {
 	}
 
 	// 获取用户id，返回给前端
-	public WebResponse getWebResponseUserId(Integer statusCode, String statusMsg, Object data, Integer userId) {
+	public WebResponse getWebResponseUserId(Integer statusCode, String statusMsg, Object data, String userId) {
 		String token = "";
 		instance = new WebResponse();
 		instance.setStatusCode(statusCode);

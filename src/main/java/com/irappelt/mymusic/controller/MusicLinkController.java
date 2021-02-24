@@ -1,12 +1,11 @@
 package com.irappelt.mymusic.controller;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Resource;
 
+import com.irappelt.mymusic.aop.annotation.ExceptionCapture;
+import com.irappelt.mymusic.aop.exception.ParamVerifyException;
 import com.irappelt.mymusic.common.WebResponse;
 import com.irappelt.mymusic.model.po.MusicLink;
 import com.irappelt.mymusic.model.po.MyMusic;
@@ -14,6 +13,7 @@ import com.irappelt.mymusic.model.po.User;
 import com.irappelt.mymusic.service.MusicLinkService;
 import com.irappelt.mymusic.service.MyMusicService;
 import com.irappelt.mymusic.service.UserService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,19 +26,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller 
 @RequestMapping("/musicLink")
+@ExceptionCapture
 public class MusicLinkController {
 
 	@Autowired
-	protected WebResponse webResponse;
+	private WebResponse webResponse;
 
 	@Autowired
-	protected MusicLinkService musicLinkServiceImpl;
+	private MusicLinkService musicLinkServiceImpl;
 
 	@Resource
-	protected UserService userServiceImpl;
+	private UserService userServiceImpl;
 
 	@Resource
-	protected MyMusicService myMusicServiceImpl;
+	private MyMusicService myMusicServiceImpl;
 
 
 	/**
@@ -48,15 +49,13 @@ public class MusicLinkController {
 	@ResponseBody
 	public WebResponse getMusicLinkList(@RequestParam(defaultValue = "1", required = false) Integer pageNo,
 			@RequestParam(defaultValue = "30", required = false) Integer pageSize,
-			@RequestParam(required = false) String keyword,
-			@RequestParam(defaultValue = "ml_id", required = false) String order,
-			@RequestParam(defaultValue = "desc", required = false) String desc) {
+			@RequestParam(defaultValue = "songId", required = false) String order) {
 
 		Map<Object, Object> map = new HashMap<>(16);
 
 		int count = musicLinkServiceImpl.getAllCount();
 		map.put("total", count);
-		List<MusicLink> list = musicLinkServiceImpl.getMusicList(pageNo, pageSize, null, false, order);
+		List<MusicLink> list = musicLinkServiceImpl.getMusicList(pageNo, pageSize, false, order);
 		if (list != null && list.size() > 0) {
 			map.put("list", list);
 			return webResponse.getWebResponse(200, "根据条件获取分页数据成功", map);
@@ -69,9 +68,11 @@ public class MusicLinkController {
 	/**
 	 * 歌曲搜索功能
 	 */
-	@RequestMapping(value = "/getSongRearch", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/getSongSearch", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public WebResponse getSongRearch(@RequestParam(required = false) String songName) {
+	public WebResponse getSongSearch(String songName) {
+
+		Optional.ofNullable(songName).orElseThrow(() -> new ParamVerifyException("搜索歌曲名不允许为空"));
 
 		Map<Object, Object> map = new HashMap<>(16);
 
@@ -90,19 +91,23 @@ public class MusicLinkController {
 	 */
 	@RequestMapping(value = "/addMusicCollect", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public WebResponse addMusicCollect(@RequestParam(required = false) String song_id, @RequestParam(required = false) String user_name,
-			@RequestParam(required = false) String user_password, @RequestParam(required = false) String songName) {
+	public WebResponse addMusicCollect(@RequestParam("song_id") String songId, @RequestParam("user_name") String userName,
+			@RequestParam("user_password") String userPassword) {
+
+		if (StringUtils.isEmpty(songId) || StringUtils.isEmpty(userName) || StringUtils.isEmpty(userPassword)) {
+			throw new ParamVerifyException("传递的参数为{songID="+songId+",userName="+userName+",userPassword="+userPassword+"}");
+		}
 
 		WebResponse webResponse = new WebResponse();
 
-		User user = userServiceImpl.getUser(user_name, user_password);
-		boolean isRepeat = myMusicServiceImpl.myMusicIsRepeat(song_id, user.getUserId());
+		User user = userServiceImpl.getUser(userName, userPassword);
+		boolean isRepeat = myMusicServiceImpl.myMusicIsRepeat(songId, user.getUserId());
 		if (isRepeat) {
 			return webResponse.getWebResponse(201, "已收藏,请不要重复收藏！", null);
 		} else {
 			MyMusic myMusic = new MyMusic();
 			myMusic.setUserId(user.getUserId());
-			myMusic.setSongId(song_id);
+			myMusic.setSongId(songId);
 			myMusicServiceImpl.addToMyMusic(myMusic);
 			return webResponse.getWebResponse(200, "收藏成功", null);
 		}
