@@ -3,8 +3,8 @@ package com.irappelt.mymusic.aop.annotation;
 import java.lang.annotation.*;
 
 /**
- * @author xiangbei
- * @date 2020/9/24
+ * @author huaiyu
+ * @date 2021/1/29 11:41
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
