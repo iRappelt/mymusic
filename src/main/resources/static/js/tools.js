@@ -134,6 +134,6 @@ function denglu(url, data) {                                                 //u
 *
 * */
 function zhuXiao() {
-    $.cookie("user_name", "1", {expires: 7, path: "/"});        // 调用该方法时将用户名的cookie值重置为1
+    $.cookie("user_name", "", {expires: 7, path: "/"});        // 调用该方法时将用户名的cookie值重置为1
     $.cookie("user_id", "", {expires: -1, path: "/"});          // 调用该方法时将用户id的cookie值删除
 }

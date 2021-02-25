@@ -96,7 +96,7 @@
                                 <input type="text" id="songName" name="songName" class="form-control"
                                        placeholder="为音乐而生">
                                 <span class="input-group-btn">
-								 <button onclick="getList2($('#songName').serialize())" class="btn btn-default"
+								 <button onclick="search()" class="btn btn-default"
                                          type="button">
 									搜索
 								</button>
@@ -421,7 +421,7 @@
     <div class="copyright">
         <p style="-moz-user-select: text;-webkit-user-select: text;-ms-user-select: text; user-select:text">如有侵权，请联系：iRappelt@163.com </p>
         <p>Copyright&nbsp;&nbsp;©&nbsp;&nbsp;2019&nbsp;&nbsp;版权所有&nbsp;&nbsp;
-            <a hidefocus="true" href="http://www.beian.miit.gov.cn" target="_blank">桂ICP备19004924号</a>
+            <!--<a hidefocus="true" href="http://www.beian.miit.gov.cn" target="_blank">桂ICP备19004924号</a>-->
             <a hidefocus="true" class="office-verification"
                href="http://netadreg.gzaic.gov.cn/ntmm/WebSear/WebLogoPub.aspx?logo=440106106022006022000209"
                target="_blank"></a>
@@ -438,13 +438,15 @@
 <script type="text/javascript">
 
 
-    if ($.cookie("user_name") != undefined && $.cookie("user_name") != "1") {
+    if ($.cookie("user_name") != undefined && $.cookie("user_name") != "") {
         $("#userName").text("账号：" + $.cookie("user_name"));
         $("#userName").attr("href", "/resetpassword.html");
         $("#zhuXiao").text("注销");
         document.getElementById("touxiang").src = "images/touxiang2.jpg";
         $("#display1").attr("style", "display:none;");
     }//已在mymusic中注释
+
+    $("#user_number").html(2594+$.cookie("user_id"));
 
     $('#test').validate({
         submitHandler: function () {
@@ -527,6 +529,14 @@
     // })
 
     /* 音乐搜索 */
+
+    function search() {
+        if ($('#songName').val() == "") {
+            alert("请输入歌曲名或歌手名搜索");
+        } else {
+            getList2($('#songName').serialize());
+        }
+    }
 
     function getList2(songName) {
         test

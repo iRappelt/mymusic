@@ -164,7 +164,7 @@
 <div class="headerbg">
     <div class="geRenZiLiao">
         <div class="touxiang">
-            <img src="images/gerentouxianag.jpeg" class="img-circle txborder">
+            <img id="myphoto" src="images/touxiang.png" width="110px" height="108px" class="img-circle txborder">
         </div>
         <h3 class="mingzijuzhong"><span><img src="images/huiyuan.png" alt="会员" width="auto" height="30px"></span></h3>
         <ul class="gzfs">
@@ -252,12 +252,15 @@
 <script type="text/javascript">
 
 
-    if ($.cookie("user_name") != undefined && $.cookie("user_name") != "1") {//如果用户名不等于1且不等于未定义，则继续执行
+    if ($.cookie("user_name") != undefined && $.cookie("user_name") != "") {//如果用户名不等于1且不等于未定义，则继续执行
         $("#userName").text("账号：" + $.cookie("user_name"));//将未登录3个字替换为用户名
         $("#zhuXiao").text("注销");//将注销加在用户名后方
         $(".mingzijuzhong").text("用户: " + $.cookie("user_name"));//替换大头像下面的用户名
         document.getElementById("touxiang").src = "images/touxiang2.jpg";//替换原始头像
+        document.getElementById("myphoto").src = "images/touxiang2.jpg";//替换原始头像
         $("#display1").attr("style", "display:none;");//隐藏登录按钮
+
+        getList2();
     }
 
     $('#test').validate({
@@ -266,7 +269,7 @@
         }
     });
 
-    getList2();
+
 
     function getList2() {
         $.ajax({

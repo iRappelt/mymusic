@@ -280,6 +280,28 @@
 </div>
 <audio id="audio" src=""></audio>
 
+<!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!---
+
+                                              结束了，页脚
+
+--><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!---->
+<div class="footer">
+    <div class="links">
+        <a hidefocus="true" href="#" target="_blank">开发者：</a>
+        <a hidefocus="true" href="https://github.com/iRappelt/mymusic" target="_blank">iRappelt</a>
+        <a hidefocus="true" href="#" target="_blank">广告合作</a>
+    </div>
+    <div class="copyright">
+        <p style="-moz-user-select: text;-webkit-user-select: text;-ms-user-select: text; user-select:text">如有侵权，请联系：iRappelt@163.com </p>
+        <p>Copyright&nbsp;&nbsp;©&nbsp;&nbsp;2019&nbsp;&nbsp;版权所有&nbsp;&nbsp;
+            <a hidefocus="true" href="http://www.beian.miit.gov.cn" target="_blank">桂ICP备19004924号</a>
+            <a hidefocus="true" class="office-verification"
+               href="http://netadreg.gzaic.gov.cn/ntmm/WebSear/WebLogoPub.aspx?logo=440106106022006022000209"
+               target="_blank"></a>
+        </p>
+    </div>
+</div>
+
     <!--榜单下面的分页，有bug，点击后会导致收藏音乐重复跳出弹框，暂时不用分页功能！ -->
 <!--<div style="position: relative;bottom: 0;left: 50%;" class="col-sm-12">-->
     <!--<ul id="pagintor"></ul>-->
@@ -296,7 +318,7 @@
         pageTools(1, 30);//tools里的方法
         getList(1);
     });
-    $("#user_number").html($.cookie("user_id"));
+    $("#user_number").html(2594+$.cookie("user_id"));
     function getList(pageNo) {
         test
         $.ajax({
