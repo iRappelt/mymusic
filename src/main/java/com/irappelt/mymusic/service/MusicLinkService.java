@@ -2,6 +2,7 @@ package com.irappelt.mymusic.service;
 
 
 import com.irappelt.mymusic.model.po.MusicLink;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,7 +23,6 @@ public interface MusicLinkService {
      * 获取榜单
      * @param pageNo
      * @param pageSize
-     * @param keyword
      * @param isAsc
      * @param orderField
      * @return
@@ -47,5 +47,5 @@ public interface MusicLinkService {
      * @param musicLink
      * @return
      */
-    MusicLink addMusicLink(MusicLink musicLink);
+    MusicLink addMusicLink(MusicLink musicLink, String imageFormat, MultipartFile songImage, MultipartFile songFile);
 }

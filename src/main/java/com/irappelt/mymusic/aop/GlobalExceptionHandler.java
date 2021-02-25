@@ -2,6 +2,7 @@ package com.irappelt.mymusic.aop;
 
 
 import com.irappelt.mymusic.aop.annotation.ExceptionCapture;
+import com.irappelt.mymusic.aop.exception.FileAnalysisException;
 import com.irappelt.mymusic.aop.exception.ParamVerifyException;
 import com.irappelt.mymusic.common.WebResponse;
 import org.slf4j.Logger;
@@ -39,6 +40,16 @@ public class GlobalExceptionHandler {
         WebResponse vo = new WebResponse();
         vo.setStatusCode(10010);
         vo.setStatusMsg("参数校验异常:"+e.getMessage());
+        return vo;
+    }
+
+    @ExceptionHandler(FileAnalysisException.class)
+    public WebResponse fileAnalysisException(FileAnalysisException e) {
+        printExceptionMessage(e);
+
+        WebResponse vo = new WebResponse();
+        vo.setStatusCode(10010);
+        vo.setStatusMsg("文件解析异常:"+e.getMessage());
         return vo;
     }
 

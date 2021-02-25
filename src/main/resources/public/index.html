@@ -113,9 +113,8 @@
             </div>
             <!-- 图标加上搜索框结束 -->
             <div id="col10" class="dengluzhuce">
+                <a id="manager_upload" class="mymusic" href="/manager.html" target="_blank">音乐上传</a>
                 <a class="mymusic" href="/mymusic.html" target="_blank">我的音乐</a>
-                <a class="mymusic" href="/mymusic.html" target="_blank">您是第<span
-                        id="user_number" style="font-size:20px;color:red;text-align:center;padding:0;"> &nbsp</span>位用户</a>
                 <span class="mymusic">|</span>
                 <img id="touxiang" src="images/touxiang.png" width="40px" height="40px"
                      style="display: inline-block; width: 40px;height: 40px;border:0;border-radius: 40px;margin-bottom: 5px;">
@@ -420,7 +419,7 @@
     </div>
     <div class="copyright">
         <p style="-moz-user-select: text;-webkit-user-select: text;-ms-user-select: text; user-select:text">如有侵权，请联系：iRappelt@163.com </p>
-        <p>Copyright&nbsp;&nbsp;©&nbsp;&nbsp;2019&nbsp;&nbsp;版权所有&nbsp;&nbsp;
+        <p>Copyright&nbsp;&nbsp;©&nbsp;&nbsp;2021&nbsp;&nbsp;版权所有&nbsp;&nbsp;
             <!--<a hidefocus="true" href="http://www.beian.miit.gov.cn" target="_blank">桂ICP备19004924号</a>-->
             <a hidefocus="true" class="office-verification"
                href="http://netadreg.gzaic.gov.cn/ntmm/WebSear/WebLogoPub.aspx?logo=440106106022006022000209"
@@ -446,7 +445,10 @@
         $("#display1").attr("style", "display:none;");
     }//已在mymusic中注释
 
-    $("#user_number").html(2594+$.cookie("user_id"));
+    // 非管理员隐藏音乐文件上传
+    if ($.cookie("user_name") != "admin") {
+        $("#manager_upload").attr("style", "display:none;");
+    }
 
     $('#test').validate({
         submitHandler: function () {

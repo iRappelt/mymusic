@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author huaiyu
@@ -111,5 +112,29 @@ public class MusicLinkController {
 			myMusicServiceImpl.addToMyMusic(myMusic);
 			return webResponse.getWebResponse(200, "收藏成功", null);
 		}
+	}
+
+	/**
+	 * 歌曲上传
+	 */
+	@RequestMapping(value = "/addMusicLink", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public String addMusicLink(String songName, String singer, String imageFormat, MultipartFile songImage, MultipartFile songFile) {
+		if (StringUtils.isEmpty(songName) || StringUtils.isEmpty(singer) || StringUtils.isEmpty(imageFormat)) {
+			throw new ParamVerifyException("传递的参数为{songName="+songName+",singer="+singer+",imageFormat="+imageFormat+"}");
+		}
+		Optional.ofNullable(songImage).orElseThrow(() -> new ParamVerifyException("歌曲图片不允许为空"));
+		Optional.ofNullable(songFile).orElseThrow(() -> new ParamVerifyException("歌曲文件不允许为空"));
+
+		// TODO 歌曲已经存在校验：通过歌曲名和歌手名校验
+		MusicLink musicLink = new MusicLink();
+		musicLink.setSongName(songName);
+		musicLink.setSinger(singer);
+		MusicLink music = musicLinkServiceImpl.addMusicLink(musicLink, imageFormat, songImage, songFile);
+
+		if (music == null) {
+			return "上传失败";
+		}
+		return "上传成功";
 	}
 }

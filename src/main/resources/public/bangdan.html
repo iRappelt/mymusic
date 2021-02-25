@@ -106,9 +106,8 @@
             </div>
             <!-- 图标加上搜索框结束 -->
             <div id="col10" class="dengluzhuce">
+                <a id="manager_upload" class="mymusic" href="/manager.html" target="_blank">音乐上传</a>
                 <a class="mymusic" href="/mymusic.html" target="_blank">我的音乐</a>
-                <a class="mymusic" href="/mymusic.html" target="_blank">您是第<span
-                        id="user_number" style="font-size:20px;color:red;text-align:center;padding:0;"> &nbsp</span>位用户</a>
                 <span class="mymusic">|</span>
                 <img id="touxiang" src="images/touxiang.png" width="40px" height="40px" style="display: inline-block;
                 width: 40px;height: 40px;border:0;border-radius: 40px;margin-bottom: 5px;">
@@ -280,28 +279,6 @@
 </div>
 <audio id="audio" src=""></audio>
 
-<!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!---
-
-                                              结束了，页脚
-
---><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!---->
-<div class="footer">
-    <div class="links">
-        <a hidefocus="true" href="#" target="_blank">开发者：</a>
-        <a hidefocus="true" href="https://github.com/iRappelt/mymusic" target="_blank">iRappelt</a>
-        <a hidefocus="true" href="#" target="_blank">广告合作</a>
-    </div>
-    <div class="copyright">
-        <p style="-moz-user-select: text;-webkit-user-select: text;-ms-user-select: text; user-select:text">如有侵权，请联系：iRappelt@163.com </p>
-        <p>Copyright&nbsp;&nbsp;©&nbsp;&nbsp;2019&nbsp;&nbsp;版权所有&nbsp;&nbsp;
-            <a hidefocus="true" href="http://www.beian.miit.gov.cn" target="_blank">桂ICP备19004924号</a>
-            <a hidefocus="true" class="office-verification"
-               href="http://netadreg.gzaic.gov.cn/ntmm/WebSear/WebLogoPub.aspx?logo=440106106022006022000209"
-               target="_blank"></a>
-        </p>
-    </div>
-</div>
-
     <!--榜单下面的分页，有bug，点击后会导致收藏音乐重复跳出弹框，暂时不用分页功能！ -->
 <!--<div style="position: relative;bottom: 0;left: 50%;" class="col-sm-12">-->
     <!--<ul id="pagintor"></ul>-->
@@ -318,7 +295,12 @@
         pageTools(1, 30);//tools里的方法
         getList(1);
     });
-    $("#user_number").html(2594+$.cookie("user_id"));
+
+    // 非管理员隐藏音乐文件上传
+    if ($.cookie("user_name") != "admin") {
+        $("#manager_upload").attr("style", "display:none;");
+    }
+
     function getList(pageNo) {
         test
         $.ajax({
@@ -379,7 +361,7 @@
             }
         })
     }//已在mymusic中注释
-    if ($.cookie("user_name") != undefined && $.cookie("user_name") != "1") {
+    if ($.cookie("user_name") != undefined && $.cookie("user_name") != "") {
         $("#userName").text("账号：" + $.cookie("user_name"));
         $("#zhuXiao").text("注销");
         document.getElementById("touxiang").src = "images/touxiang2.jpg";

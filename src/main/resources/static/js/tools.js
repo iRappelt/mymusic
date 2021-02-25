@@ -1,10 +1,5 @@
-/*
-*
-*
-*                                                       分页
-*
-*
-* */
+
+/************************分页获取榜单*************************/
 function pageTools(curtpage, tpage) {
     var options = {
         bootstrapMajorVersion: 3, //版本
@@ -33,13 +28,8 @@ function pageTools(curtpage, tpage) {
     $("#pagintor").bootstrapPaginator(options); // $("#pagintor") Bootstrap 是2.X 使用div元素，3.X使用ul元素
 }
 
-/*
-*
-*
-*                                                       注册
-*
-*
-* */
+/**************************注册*******************/
+
 function addToDB(url, data) {
     $.ajax({
         url: url,
@@ -60,13 +50,8 @@ function addToDB(url, data) {
     })
 }
 
-/*
-*
-*
-*                                                       修改密码方法
-*
-*
-* */
+/***************************************修改密码方法***********************/
+
 function setPassWord(url, data) {                   //url和data为参数，在调用该方法是传入
     $.ajax({
         url: url,
@@ -87,13 +72,8 @@ function setPassWord(url, data) {                   //url和data为参数，在�
     });
 };
 
-/*
-*
-*
-*                                                       登录方法
-*
-*
-* */
+/*************************登录*************************************/
+
 function denglu(url, data) {                                                 //url和data为参数，在调用该方法是传入
     $.ajax({
         url: url,
@@ -126,14 +106,31 @@ function denglu(url, data) {                                                 //u
     });
 };
 
-/*
-*
-*
-*                                                       注销的部分方法
-*
-*
-* */
+/**************************************注销的部分方法*****************************/
+
 function zhuXiao() {
     $.cookie("user_name", "", {expires: 7, path: "/"});        // 调用该方法时将用户名的cookie值重置为1
     $.cookie("user_id", "", {expires: -1, path: "/"});          // 调用该方法时将用户id的cookie值删除
+}
+
+
+/****************************音乐上传*******************************/
+
+function musicLinkUpload(url, data) {
+    $.ajax({
+        url: url,
+        type: "post",
+        data: data,
+        success: function (data) {
+            if (data.statusCode == "200") {
+                alert("上传成功！");
+                //location.reload();
+            } else {
+                alert("上传失败!" + data.statusMsg);
+            }
+        },
+        error: function (data) {
+            alert(JSON.stringify(data));
+        }
+    })
 }

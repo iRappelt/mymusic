@@ -32,6 +32,10 @@ spring:
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 500MB
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.irappelt.mymusic.model
