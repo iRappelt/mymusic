@@ -5,13 +5,11 @@ import com.irappelt.mymusic.model.po.MusicLink;
 import com.irappelt.mymusic.service.MusicLinkService;
 import com.irappelt.mymusic.util.OssStorage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -66,9 +64,19 @@ public class MusicLinkServiceImpl implements MusicLinkService {
         musicLink.setMvLink("");
         musicLink.setPlayedNum(0);
         // 调用OSS存储
-        Map<String, String> result = OssStorage.multipartFileUpload(imageFormat, songImage, songFile);
+        Map<String, String> result = OssStorage.multipartFileUpload(musicLink.getSongName(), imageFormat, songImage, songFile);
         musicLink.setImageLink(result.get("songImageUrl"));
         musicLink.setSongLink(result.get("songFileUrl"));
         return musicLinkRespository.save(musicLink);
+    }
+
+    @Override
+    public List<MusicLink> getMusicByCondition(MusicLink musicLink) {
+        return musicLinkRespository.findAll(Example.of(musicLink));
+    }
+
+    @Override
+    public void download(String songUrl, HttpServletResponse response) {
+        OssStorage.multipartFileDownload(songUrl, response);
     }
 }

@@ -1,8 +1,11 @@
 package com.irappelt.mymusic.controller;
 
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import com.irappelt.mymusic.aop.annotation.ExceptionCapture;
 import com.irappelt.mymusic.aop.exception.ParamVerifyException;
@@ -16,10 +19,7 @@ import com.irappelt.mymusic.service.UserService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -117,24 +117,42 @@ public class MusicLinkController {
 	/**
 	 * 歌曲上传
 	 */
-	@RequestMapping(value = "/addMusicLink", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/addMusicLink", method = RequestMethod.POST)
 	@ResponseBody
-	public String addMusicLink(String songName, String singer, String imageFormat, MultipartFile songImage, MultipartFile songFile) {
+	public WebResponse addMusicLink(String songName, String singer, String imageFormat, MultipartFile songImage, MultipartFile songFile) {
 		if (StringUtils.isEmpty(songName) || StringUtils.isEmpty(singer) || StringUtils.isEmpty(imageFormat)) {
 			throw new ParamVerifyException("传递的参数为{songName="+songName+",singer="+singer+",imageFormat="+imageFormat+"}");
 		}
 		Optional.ofNullable(songImage).orElseThrow(() -> new ParamVerifyException("歌曲图片不允许为空"));
 		Optional.ofNullable(songFile).orElseThrow(() -> new ParamVerifyException("歌曲文件不允许为空"));
 
-		// TODO 歌曲已经存在校验：通过歌曲名和歌手名校验
 		MusicLink musicLink = new MusicLink();
 		musicLink.setSongName(songName);
 		musicLink.setSinger(singer);
+		// 歌曲已经存在校验：通过歌曲名和歌手名校验
+		List<MusicLink> list = musicLinkServiceImpl.getMusicByCondition(musicLink);
+		if (list != null && list.size() > 0) {
+			return webResponse.getWebResponse(203, "上传失败,歌曲已经存在", list);
+		}
+		// 上传
 		MusicLink music = musicLinkServiceImpl.addMusicLink(musicLink, imageFormat, songImage, songFile);
 
 		if (music == null) {
-			return "上传失败";
+			return webResponse.getWebResponse(201, "上传失败", null);
 		}
-		return "上传成功";
+		return webResponse.getWebResponse(200, "上传成功", music);
+	}
+
+	@GetMapping("/download")
+	public void download(String songUrl, HttpServletResponse response) {
+//		musicLinkServiceImpl.download(songUrl, response);
+		try {
+			String[] strArray = songUrl.split("/");
+			String fileName = strArray[strArray.length - 1];
+			response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+			response.sendRedirect(songUrl);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

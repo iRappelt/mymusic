@@ -87,7 +87,7 @@
         </div>
         <a href="javascript:;" class="music_mode "></a>
         <a href="javascript:;" class="music_fav "></a>
-        <a href="javascript:;" class="music_down"></a>
+        <a href="javascript:;" class="music_down" id="musicDownload"></a>
         <a href="javascript:;" class="music_comment"></a>
         <a href="javascript:;" class="music_only "></a>
         <div class="music_voice_info">
@@ -108,6 +108,27 @@
 <audio id="audio" src=""></audio>
 <script src="js/index.js"></script>
 <script>
+    // 文件下载
+    $('#musicDownload').click(function () {
+        var xhr = new XMLHttpRequest();
+        //配置请求方式、请求地址以及是否同步
+        xhr.open('GET', 'https://irappelt-song-file.oss-cn-beijing.aliyuncs.com/210226113718dc6984ac.mp3', true);
+        //设置请求结果类型为 <br> blob xhr.responseType = 'blob';
+        //请求成功回调函数
+        xhr.onload = function(e) {
+            if (this.status == 200) {
+                //请求成功
+                //获取 blob 对象
+                var blob = this.response;
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "fileName";
+                link.click();
+                window.URL.revokeObjectURL(link.href);
+            }};
+        xhr.send();
+    });
+
     //工作原理代码见index.js
     getList2();
 

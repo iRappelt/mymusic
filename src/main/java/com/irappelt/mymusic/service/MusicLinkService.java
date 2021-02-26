@@ -4,6 +4,7 @@ package com.irappelt.mymusic.service;
 import com.irappelt.mymusic.model.po.MusicLink;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -48,4 +49,13 @@ public interface MusicLinkService {
      * @return
      */
     MusicLink addMusicLink(MusicLink musicLink, String imageFormat, MultipartFile songImage, MultipartFile songFile);
+
+    /**
+     * 根据条件获得歌曲列表
+     * @param musicLink
+     * @return
+     */
+    List<MusicLink> getMusicByCondition(MusicLink musicLink);
+
+    void download(String songUrl, HttpServletResponse response);
 }
