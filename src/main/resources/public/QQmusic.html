@@ -146,60 +146,47 @@
                     var str = '';
                     for (var i = 0; i < data.data.list.length; i++) {
                         var a = i + 1;
-                        str += '<li class="list_music">\n' +
+                        str += '<li class="list_music" id="musicList'+i+'">\n' +
                             '                        <div class="list_number">' + a + '</div>\n' +
                             '                        <div id= sName' + i + ' class="list_name" style="cursor: pointer;">' + data.data.list[i].songName +
-                            '<span class="glyphicon glyphicon-trash" id=sFav' + i + ' style="color: rgba(255,255,255,0.5);float: right;margin-right: 20px;cursor: pointer;"></span>' +
                             '                        </div>\n' +
+                            '<div><span class="glyphicon glyphicon-trash" id=sFav' + i + ' style="color: rgba(255,255,255,0.5);float: right;margin-right: 20px;cursor: pointer;"></span></div>' +
                             '                        <div class="list_singer">' + data.data.list[i].singer + '</div>\n' +
                             '                        <div class="list_time"><span class="time1">4:36</span>\n' +
                             '                    </li>';
 
                         function play(i) {
                             $("#sNamee").on('click', '#sName' + i, function () {
-                                fn(i);
+                                $.cookie("song_link", data.data.list[i].songLink, {expires: 7, path: "/"});
+                                $.cookie("song_name", data.data.list[i].songName, {expires: 7, path: "/"});
+                                $.cookie("song_singer", data.data.list[i].singer, {expires: 7, path: "/"});
+                                $.cookie("song_photo", data.data.list[i].imageLink, {expires: 7, path: "/"});
+                                window.location.href = "/QQmusic.html";
                             });
                         }
-
                         play(i);
 
                         function play1(i) {
                             $("#sNamee").on('click', '#sFav' + i, function () {
-                                fn1(i);
-                                dle();
+                                $.cookie("ml_id", data.data.list[i].songId, {expires: 7, path: "/"});
+                                dle(i);
                             });
                         }
-
                         play1(i);
                     }
-
-                    function fn(j) {
-
-                        $.cookie("song_link", data.data.list[j].songLink, {expires: 7, path: "/"});
-                        $.cookie("song_name", data.data.list[j].songName, {expires: 7, path: "/"});
-                        $.cookie("song_singer", data.data.list[j].singer, {expires: 7, path: "/"});
-                        $.cookie("song_photo", data.data.list[j].imageLink, {expires: 7, path: "/"});
-                        window.location.href = "/QQmusic.html";
-                    }
-
-                    function fn1(j) {
-
-                        $.cookie("ml_id", data.data.list[j].songId, {expires: 7, path: "/"});
-                    }
-
 
                     $("#sNamee").html(str);
                 } else if (data.statusCode == "202") {
                     alert("您还没有收藏歌曲哦，快去列表收藏吧！");
                 }
             },
-            error: function (data) {
-                alert(JSON.stringify(data));
+            error: function () {
+                alert("系统错误，请联系管理员");
             }
         })
-    }//已在mymusic中注释
+    }
 
-    function dle() {
+    function dle(i) {
         $.ajax({
             async: false,
             url: "/myMusic/deleteMyMusic",
@@ -208,19 +195,21 @@
                 "song_id": $.cookie("ml_id"),
                 "user_id": $.cookie("user_id"),
             },
-            success: function (data) {//webspond
+            success: function (data) {
                 if (data.statusCode == "200") {
-                    window.location.reload();
+                    let str = "#musicList"+i;
+                    $(str).remove();
                     alert("已成功从收藏列表移除");
 
                     //location.reload();
                 } else {
                     alert("add error!" + data.statusMsg);
                 }
-
             },
-
+            error: function () {
+                alert("系统错误，请联系管理员");
+            }
         })
-    }//已在mymusic中注释
+    }
 </script>
 </body>
