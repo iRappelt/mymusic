@@ -76,7 +76,7 @@ public class MusicLinkServiceImpl implements MusicLinkService {
     }
 
     @Override
-    public void download(String songUrl, HttpServletResponse response) {
-        OssStorage.multipartFileDownload(songUrl, response);
+    public String download(String songUrl) {
+        return OssStorage.multipartFileDownload(songUrl);
     }
 }

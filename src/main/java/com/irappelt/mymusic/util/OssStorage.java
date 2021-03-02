@@ -2,11 +2,13 @@ package com.irappelt.mymusic.util;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.irappelt.mymusic.aop.exception.FileAnalysisException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -93,9 +95,9 @@ public class OssStorage {
         }
     }
 
-    public static void multipartFileDownload(String url, HttpServletResponse response) {
+    public static String multipartFileDownload(String url) {
         try {
-            //url 为图片的url
+            //url 为文件的url
             URL urls = new URL(url);
             // 打开连接
             URLConnection con = urls.openConnection();
@@ -108,14 +110,12 @@ public class OssStorage {
             String fileName = strArray[strArray.length - 1];
 
             // 1K的数据缓冲
-            byte[] bs = new byte[1024];
+            byte[] bs = new byte[1024*4];
             // 读取到的数据长度
             int len;
             // 输出的文件流
             // 缓冲文件输出流
-            BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());
-            // 通知浏览器以附件形式下载
-            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+            ByteArrayOutputStream out = new ByteArrayOutputStream ();
             // 开始读取
             while ((len = in.read(bs)) != -1) {
                 out.write(bs, 0, len);
@@ -123,6 +123,7 @@ public class OssStorage {
             // 完毕，关闭所有链接
             out.close();
             in.close();
+            return Base64.getEncoder().encodeToString(out.toByteArray());
 
         } catch (Exception e) {
             e.printStackTrace();

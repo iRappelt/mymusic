@@ -57,5 +57,5 @@ public interface MusicLinkService {
      */
     List<MusicLink> getMusicByCondition(MusicLink musicLink);
 
-    void download(String songUrl, HttpServletResponse response);
+    String download(String songUrl);
 }

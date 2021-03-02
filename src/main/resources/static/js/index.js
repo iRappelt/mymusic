@@ -73,7 +73,7 @@ $(function () {
 
     //实现播放暂停功能
     var onOff=false;
-    first("#audio").play();
+    document.getElementById("audio").play();
     first(".music_play")[0].onclick = function(){
         if (onOff) {
             first("#audio").play();
@@ -83,7 +83,7 @@ $(function () {
             first("#audio").pause();
             onOff=true;
         }
-    }
+    };
 
     function first(selecoter){
         return selecoter.substring(0,1)=="."?

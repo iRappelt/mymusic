@@ -86,7 +86,7 @@
             </div>
         </div>
         <a href="javascript:;" class="music_mode "></a>
-        <a href="javascript:;" class="music_fav "></a>
+        <a href="javascript:;" class="music_fav " id="musicCollect"></a>
         <a href="javascript:;" class="music_down" id="musicDownload"></a>
         <a href="javascript:;" class="music_comment"></a>
         <a href="javascript:;" class="music_only "></a>
@@ -108,30 +108,43 @@
 <audio id="audio" src=""></audio>
 <script src="js/index.js"></script>
 <script>
-    // 文件下载
+    /*********************************************播放工作原理代码见index.js******************************************/
+
+
+    /*********************************************文件下载******************************************/
     $('#musicDownload').click(function () {
-        var xhr = new XMLHttpRequest();
-        //配置请求方式、请求地址以及是否同步
-        xhr.open('GET', 'https://irappelt-song-file.oss-cn-beijing.aliyuncs.com/210226113718dc6984ac.mp3', true);
-        //设置请求结果类型为 <br> blob xhr.responseType = 'blob';
-        //请求成功回调函数
-        xhr.onload = function(e) {
-            if (this.status == 200) {
-                //请求成功
-                //获取 blob 对象
-                var blob = this.response;
-                const link = document.createElement('a');
-                link.href = window.URL.createObjectURL(blob);
-                link.download = "fileName";
-                link.click();
-                window.URL.revokeObjectURL(link.href);
-            }};
-        xhr.send();
+        $.ajax({
+            type: 'get',
+            url: "/musicLink/download",
+            data: {"songUrl":$.cookie("song_link")},
+            success: function (data) {
+                var blob = base64toBlob(data.file);
+                const href = URL.createObjectURL(blob); //根据二进制对象创造新的链接
+                const a = document.createElement('a');
+                a.setAttribute('href', href);
+                a.setAttribute('download', $.cookie("song_name")+".mp3");
+                a.click();
+                URL.revokeObjectURL(href)
+            },
+            error: function (data) {
+
+            }
+        });
     });
+    // base64字符串转Blob
+    function base64toBlob(base64Str) {
+        var bstr = atob(base64Str),
+            n = bstr.length,
+            u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        // 下载的是mp3格式的文件
+        return new Blob([u8arr], { type: "audio/mp3" });
+    }
 
-    //工作原理代码见index.js
+    /*********************************************获取收藏歌曲列表******************************************/
     getList2();
-
     function getList2() {
         $.ajax({
             url: "myMusic/getMyMusicList",
@@ -139,7 +152,7 @@
             data: {
                 "user_name": $.cookie("user_name"),
                 "user_password": $.cookie("user_password"),
-                "song_id": $.cookie("song_id"),
+                "song_id": $.cookie("song_id")
             },
             success: function (data) {
                 if (data.statusCode == "200") {
@@ -172,6 +185,7 @@
                                 dle(i);
                             });
                         }
+
                         play1(i);
                     }
 
@@ -186,30 +200,62 @@
         })
     }
 
-    function dle(i) {
+
+    /*********************************************删除收藏的歌曲******************************************/
+    function dle() {
         $.ajax({
             async: false,
             url: "/myMusic/deleteMyMusic",
             type: "post",
             data: {
                 "song_id": $.cookie("ml_id"),
-                "user_id": $.cookie("user_id"),
+                "user_id": $.cookie("user_id")
             },
             success: function (data) {
                 if (data.statusCode == "200") {
                     let str = "#musicList"+i;
                     $(str).remove();
                     alert("已成功从收藏列表移除");
-
-                    //location.reload();
                 } else {
                     alert("add error!" + data.statusMsg);
+                }
+
+            },
+            error: function (data) {
+                alert("系统错误，请联系管理员");
+            }
+
+        })
+    }
+
+    /*********************************************收藏正在播放的歌曲******************************************/
+    $('#musicCollect').click(function () {
+        $.ajax({
+            async: false,
+            url: "/musicLink/addMusicCollect",
+            type: "post",
+            data: {
+                "songName": $.cookie("song_name"),
+                "song_id": $.cookie("song_id"),
+                "user_name": $.cookie("user_name"),
+                "user_password": $.cookie("user_password")
+            },
+            success: function (data) {
+                if (data.statusCode == "200") {
+                    alert("歌曲收藏成功，请去我的音乐查看！")
+                    //location.reload();
+                } else {
+                    alert("亲！您已经收藏这首歌了哦，快去我的音乐中查看吧");
                 }
             },
             error: function () {
                 alert("系统错误，请联系管理员");
             }
+            error: function () {
+                alert("系统错误，请联系管理员");
+            }
+
         })
-    }
+    })
 </script>
 </body>

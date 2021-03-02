@@ -157,7 +157,7 @@
                 "songName": $.cookie("song_name"),
                 "song_id": $.cookie("song_id"),
                 "user_name": $.cookie("user_name"),
-                "user_password": $.cookie("user_password"),
+                "user_password": $.cookie("user_password")
             },
             success: function (data) {//webspond
                 if (data.statusCode == "200") {
@@ -170,6 +170,9 @@
                 }
 
             },
+            error: function (data) {
+                alert("系统错误，请联系管理员");
+            }
 
         })
     }
