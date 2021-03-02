@@ -90,6 +90,4 @@ $(function () {
             document.getElementsByClassName(selecoter.substring(1)):
             document.getElementById(selecoter.substring(1));
     }
-
-
 });

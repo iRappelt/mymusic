@@ -144,7 +144,6 @@
             success: function (data) {
                 if (data.statusCode == "200") {
                     var str = '';
-                    /* data.data.list.length对应respon.map.list.length */
                     for (var i = 0; i < data.data.list.length; i++) {
                         var a = i + 1;
                         str += '<li class="list_music">\n' +

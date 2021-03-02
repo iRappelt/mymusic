@@ -2,12 +2,14 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>轻语搜索</title>
+    <title>搜索</title>
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <link rel="shortcut icon" type="image/x-icon" href="images/logo1.png">
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <link href="css/jquery.mCustomScrollbar.css" rel="stylesheet" />
 </head>
 <body style="user-select: none">
 <div class="search1">
@@ -53,7 +55,7 @@
 
                         </tr>
                         </thead>
-                        <tbody style="font-size: 16px">
+                        <tbody id="search_content" style="font-size: 16px;width: 1200px;height:600px;">
                         <tr>
                         </tr>
                         </tbody>
@@ -76,14 +78,8 @@
 
 <script type="text/javascript">
 
-    /*  $('#test').validate({
-          submitHandler: function (form) {
-            <!-- #test对应form的id="test" -->
-              rearchSong($('#test').attr("action"));
-          }
-      }); */
     if ($.cookie("song_search") != null && $.cookie("song_search") != "") {
-        getList2("songName=" + $.cookie("song_search"));//调用getlist2方法
+        getList2("songName=" + $.cookie("song_search"));
     }
 
     function getList2(lll) {
@@ -96,7 +92,6 @@
                     var search = document.getElementById("songName").value;//获取搜索框内的文本
                     $.cookie("song_search", search, {expires: 7, path: "/"});//将文本存入cookie
                     var str = '';
-                    /* data.data.list.length对应respon.map.list.length */
                     for (var i = 0; i < data.data.list.length; i++) {
                         var a = i + 1;
 
@@ -108,53 +103,50 @@
                             + '<td style="padding: 14px;border-bottom: 1px solid #eee;width: 300px;text-align: center;"><a href="#">' + data.data.list[i].singer + '</a></td>'
                             + '</tr>';
 
-                        function play(i) {
-
+                        function musicPlay(i) {
                             $("table").on('click', '.sName' + i, function () {
-                                fn(i);
+                                $.cookie("song_link", data.data.list[i].songLink, {expires: 7, path: "/"});
+                                $.cookie("song_name", data.data.list[i].songName, {expires: 7, path: "/"});
+                                $.cookie("song_singer", data.data.list[i].singer, {expires: 7, path: "/"});
+                                $.cookie("song_photo", data.data.list[i].imageLink, {expires: 7, path: "/"});
+                                window.location.href = "/QQmusic.html";
                             });
                         }
 
-                        play(i);
+                        musicPlay(i);
 
-                        function play1(i) {
+                        function musicCollect(i) {
                             $("#sFav").unbind();
                             $("table").on('click', '#sFav' + i, function () {
-                                fn1(i);
+                                $.cookie("song_id", data.data.list[i].songId, {expires: 7, path: "/"});
+                                $.cookie("song_name", data.data.list[i].songName, {expires: 7, path: "/"});
                                 fav(i);
                             });
                         }
 
-                        play1(i);
+                        musicCollect(i);
                     }
-
-                    function fn(j) {
-                        console.log(data.data.list[j].songId);
-                        $.cookie("song_link", data.data.list[j].songLink, {expires: 7, path: "/"});
-                        $.cookie("song_name", data.data.list[j].songName, {expires: 7, path: "/"});
-                        $.cookie("song_singer", data.data.list[j].singer, {expires: 7, path: "/"});
-                        $.cookie("song_photo", data.data.list[j].imageLink, {expires: 7, path: "/"});
-                        window.location.href = "/QQmusic.html";
-                    }
-
-                    function fn1(j) {
-                        console.log(data.data.list[j].songId);
-                        $.cookie("song_id", data.data.list[j].songId, {expires: 7, path: "/"});
-                        $.cookie("song_name", data.data.list[j].songName, {expires: 7, path: "/"});
-                    }
-
 
                     $("table tbody").html(str);
+                    $("#search_content").mCustomScrollbar({
+                        autoHideScrollbar:true
+                    });
+                    // (function($){
+                    //     $(window).load(function(){
+                    //         $("#search_content").mCustomScrollbar({
+                    //             autoHideScrollbar:true
+                    //         });
+                    //     });
+                    // })(jQuery);
                 } else if (data.statusCode == "202") {
                     alert("搜索不到歌曲！");
                 }
             },
             error: function (data) {
-                alert(JSON.stringify(data));
+                alert("系统错误，请联系管理员");
             }
         })
-    }//已在mymusic中注释
-
+    }
 
     function fav(j) {
         $.ajax({
@@ -180,8 +172,7 @@
             },
 
         })
-    }//已在mymusic中注释
-
+    }
 
 </script>
 

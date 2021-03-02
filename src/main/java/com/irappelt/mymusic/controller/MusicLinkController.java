@@ -49,7 +49,7 @@ public class MusicLinkController {
 	@RequestMapping(value = "/getMusicLinkList", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public WebResponse getMusicLinkList(@RequestParam(defaultValue = "1", required = false) Integer pageNo,
-			@RequestParam(defaultValue = "30", required = false) Integer pageSize,
+			@RequestParam(defaultValue = "15", required = false) Integer pageSize,
 			@RequestParam(defaultValue = "songId", required = false) String order) {
 
 		Map<Object, Object> map = new HashMap<>(16);
