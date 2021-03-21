@@ -4,6 +4,7 @@ import com.irappelt.mymusic.dao.MusicLinkRespository;
 import com.irappelt.mymusic.model.po.MusicLink;
 import com.irappelt.mymusic.service.MusicLinkService;
 import com.irappelt.mymusic.util.OssStorage;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class MusicLinkServiceImpl implements MusicLinkService {
         } else {
             sort = Sort.by(Sort.Direction.DESC, orderField);
         }
-        Pageable pageable = PageRequest.of(pageNo-1, pageSize, sort);
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
         Page<MusicLink> all = musicLinkRespository.findAll(pageable);
         return all.getContent();
     }
@@ -56,17 +57,21 @@ public class MusicLinkServiceImpl implements MusicLinkService {
     }
 
     @Override
-    public MusicLink addMusicLink(MusicLink musicLink, String imageFormat, MultipartFile songImage, MultipartFile songFile) {
+    public MusicLink addMusicLink(MusicLink musicLink, String imageFormat, MultipartFile songImage, MultipartFile songFile, MultipartFile songLyric) {
         musicLink.setSongId(UUID.randomUUID().toString().replaceAll("-", ""));
         musicLink.setCollectedNum(0);
         musicLink.setCreateTime(new Date());
-        musicLink.setLyricLink("");
         musicLink.setMvLink("");
         musicLink.setPlayedNum(0);
         // 调用OSS存储
-        Map<String, String> result = OssStorage.multipartFileUpload(musicLink.getSongName(), imageFormat, songImage, songFile);
+        Map<String, String> result = OssStorage.multipartFileUpload(musicLink.getSongName(), imageFormat, songImage, songFile, songLyric);
         musicLink.setImageLink(result.get("songImageUrl"));
         musicLink.setSongLink(result.get("songFileUrl"));
+        if (StringUtils.isNotEmpty(result.get("songLyricUrl"))) {
+            musicLink.setLyricLink(result.get("songLyricUrl"));
+        } else {
+            musicLink.setLyricLink("");
+        }
         return musicLinkRespository.save(musicLink);
     }
 
@@ -78,5 +83,10 @@ public class MusicLinkServiceImpl implements MusicLinkService {
     @Override
     public String download(String songUrl) {
         return OssStorage.multipartFileDownload(songUrl);
+    }
+
+    @Override
+    public String getSongLyric(String lyricLink) {
+        return OssStorage.getSongLyric(lyricLink);
     }
 }

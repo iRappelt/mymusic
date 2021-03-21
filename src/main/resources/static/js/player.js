@@ -1,36 +1,52 @@
 (function (window) {
-    function Progress($progressBar,$progressLine,$progressDot) {
-        return new Progress.prototype.init($progressBar,$progressLine,$progressDot);
+    function Progress($progressBar, $progressLine, $progressDot) {
+        return new Progress.prototype.init($progressBar, $progressLine, $progressDot);
 
     }
+
     Progress.prototype = {
-        constructor:Progress,
-        init:function ($progressBar,$progressLine,$progressDot) {
+        constructor: Progress,
+        init: function ($progressBar, $progressLine, $progressDot) {
             this.$progressBar = $progressBar;
             this.$progressLine = $progressLine;
             this.$progressDot = $progressDot;
         },
-        progressClick:function (callBack) {
+        progressClick: function (callBack) {
             var $this = this;
             this.$progressBar.click(function () {
                 var normalLeft = $(this).offset().left;
                 var eventLeft = event.pageX;
-                $this.$progressLine.css("width",eventLeft - normalLeft)
-                $this.$progressDot.css("left",eventLeft - normalLeft)
+                $this.$progressLine.css("width", eventLeft - normalLeft);
+                $this.$progressDot.css("left", eventLeft - normalLeft);
                 var value = (eventLeft - normalLeft) / $(this).width();
                 callBack(value);
             })
         },
-        progressMove:function (callBack) {
+        progressMove: function (callBack) {
             var $this = this;
             this.$progressBar.mousedown(function () {
                 var normalLeft = $(this).offset().left;
                 $(document).mousemove(function () {
 
                     var eventLeft = event.pageX;
-                    $this.$progressLine.css("width", eventLeft - normalLeft);
-                    $this.$progressDot.css("left", eventLeft - normalLeft);
-                    var value = (eventLeft - normalLeft) / $(this).width();
+                    var distance = eventLeft - normalLeft;
+                    if (distance <= 0) {
+                        $this.$progressLine.css("width", 0);
+                    } else if (distance >= 70) {
+                        $this.$progressLine.css("width", 70);
+                    } else {
+                        $this.$progressLine.css("width", distance);
+                    }
+                    if (distance <= 0) {
+                        distance = 0;
+                        $this.$progressDot.css("left", 0);
+                    } else if (distance >= 70) {
+                        distance = 70;
+                        $this.$progressDot.css("left", 70);
+                    } else {
+                        $this.$progressDot.css("left", distance);
+                    }
+                    var value = (distance) / $(this).width();
                     callBack(value);
                 });
             });
@@ -39,7 +55,7 @@
             });
         }
 
-    },
-        Progress.prototype.init.prototype = Progress.prototype;
+    };
+    Progress.prototype.init.prototype = Progress.prototype;
     window.Progress = Progress;
 })(window);

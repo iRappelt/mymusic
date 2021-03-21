@@ -48,7 +48,7 @@ public interface MusicLinkService {
      * @param musicLink
      * @return
      */
-    MusicLink addMusicLink(MusicLink musicLink, String imageFormat, MultipartFile songImage, MultipartFile songFile);
+    MusicLink addMusicLink(MusicLink musicLink, String imageFormat, MultipartFile songImage, MultipartFile songFile, MultipartFile songLyric);
 
     /**
      * 根据条件获得歌曲列表
@@ -58,4 +58,6 @@ public interface MusicLinkService {
     List<MusicLink> getMusicByCondition(MusicLink musicLink);
 
     String download(String songUrl);
+
+    String getSongLyric(String lyricLink);
 }

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <title>青听音乐</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/jquery.mCustomScrollbar.css">
+    <link rel="stylesheet" href="css/play.css">
+    <link rel="shortcut icon" type="image/x-icon" href="images/weblogo.ico">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <script src="js/jquery.mCustomScrollbar.js"></script>
+    <script src="js/player.js"></script>
+</head>
+
+<body style="user-select: none;">
+<div class="header">
+    <h1><a href="/index.html"><img style="width: 153px; height: 37px;" src="images/webicon.png" alt=""/></a></h1>
+    <ul class="register">
+        <li></li>
+        <li>设置</li>
+    </ul>
+</div>
+<div class="content">
+    <div class="content_in">
+        <div class="content_left">
+            <!--<div class="content_toolbar">-->
+            <!--<span class="glyphicon glyphicon-heart-empty"> 收 藏</span>-->
+            <!--<span class="glyphicon glyphicon-plus-sign"> 添加到</span>-->
+            <!--<span class="glyphicon glyphicon-download-alt"> 下 载</span>-->
+            <!--<span class="glyphicon glyphicon-trash"> 删 除</span>-->
+            <!--<span class="glyphicon glyphicon-fire"> 清空列表</span>-->
+            <!--</div>-->
+            <div class="content_list_top">
+                <ul>
+                    <li class="list_title">
+                        <!--<div class="list_check"><i></i></div>-->
+                        <!--<div class="list_number">&nbsp;&nbsp;</div>-->
+                        <div class="list_name"><b>歌曲</b></div>
+                        <div class="list_singer"><b>歌手</b></div>
+                        <!--<div class="list_time">时长</div>-->
+                    </li>
+                </ul>
+            </div>
+            <div class="content_list" data-mcs-theme="minimal-dark" id="content_list">
+                <ul id="sNamee">
+                </ul>
+            </div>
+        </div>
+        <div class="content_right">
+            <div class="song_info" style="margin: 100px;margin-bottom: 10px;">
+                <a href="javascript:;" class="song_info_pic">
+                    <img class="song_img" src="images/2.jpg" alt="" width="200px" height="200px">
+                </a>
+                <div class="song_info_name ">歌曲名称：
+                    <a class="songName" href="javascript:;">
+                    </a>
+                </div>
+                <div class="song_info_singer">歌 手 名 ：
+                    <a class="songSinger" href="javascript:;">
+                    </a>
+                </div>
+                <div class="song_info_ablum">专辑名称：
+                    <a href="javascript:;">未知专辑
+
+                    </a>
+                </div>
+            </div>
+            <div class="song_lyric_span">
+                <ul id="song_lyric" class="aplayer-lrc-contents" style="transform: translateY(0px);"></ul>
+                <ul id="song_lyric_2" class="aplayer-lrc-contents" style="transform: translateY(0px);">
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<div class="footer">
+    <div class="footer_in">
+        <a href="javascript:;" class="music_pre"></a>
+        <a href="javascript:;" class="music_play music_play2"></a>
+        <a href="javascript:;" class="music_next"></a>
+        <div class="music_progress_info">
+            <div class="music_progress_top">
+                <div class="music_progress_name"><span>一吻天荒 / 胡歌</span></div>
+                <span class="music_progress_time">00:00 / 00:00</span></div>
+            <div class="music_progress_bar">
+                <div class="music_progress_line">
+                    <div class="music_progress_dot"></div>
+                </div>
+            </div>
+        </div>
+        <a href="javascript:;" class="music_mode" id="music_mode"></a>
+        <a href="javascript:;" class="music_fav " id="musicCollect"></a>
+        <a href="javascript:;" class="music_down" id="musicDownload"></a>
+        <!--暂时不做评论<a href="javascript:;" class="music_comment"></a>-->
+        <div class="music_voice_info">
+            <a href="javascript:;" class="music_voice_icon" id="voice_stop"></a>
+            <div class="music_voice_bar">
+                <div class="music_voice_line">
+                    <div class="music_voice_dot"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="mask_bg">
+    <img class="song_img" src="images/touxiang2.jpg" alt="" width="100%" height="100%">
+</div>
+<div class="mask"></div>
+<audio id="audio" src=""></audio>
+<script src="js/play.js"></script>
+</body>

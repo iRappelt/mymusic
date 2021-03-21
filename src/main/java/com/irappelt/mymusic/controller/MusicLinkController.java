@@ -119,12 +119,13 @@ public class MusicLinkController {
      */
     @RequestMapping(value = "/addMusicLink", method = RequestMethod.POST)
     @ResponseBody
-    public WebResponse addMusicLink(String songName, String singer, String imageFormat, MultipartFile songImage, MultipartFile songFile) {
+    public WebResponse addMusicLink(String songName, String singer, String imageFormat, MultipartFile songImage, MultipartFile songFile, MultipartFile songLyric) {
         if (StringUtils.isEmpty(songName) || StringUtils.isEmpty(singer) || StringUtils.isEmpty(imageFormat)) {
             throw new ParamVerifyException("传递的参数为{songName=" + songName + ",singer=" + singer + ",imageFormat=" + imageFormat + "}");
         }
         Optional.ofNullable(songImage).orElseThrow(() -> new ParamVerifyException("歌曲图片不允许为空"));
         Optional.ofNullable(songFile).orElseThrow(() -> new ParamVerifyException("歌曲文件不允许为空"));
+        // 歌词可以不传
 
         MusicLink musicLink = new MusicLink();
         musicLink.setSongName(songName);
@@ -135,7 +136,7 @@ public class MusicLinkController {
             return webResponse.getWebResponse(203, "上传失败,歌曲已经存在", list);
         }
         // 上传
-        MusicLink music = musicLinkServiceImpl.addMusicLink(musicLink, imageFormat, songImage, songFile);
+        MusicLink music = musicLinkServiceImpl.addMusicLink(musicLink, imageFormat, songImage, songFile, songLyric);
 
         if (music == null) {
             return webResponse.getWebResponse(201, "上传失败", null);
@@ -143,6 +144,12 @@ public class MusicLinkController {
         return webResponse.getWebResponse(200, "上传成功", music);
     }
 
+
+    /**
+     * 歌曲下载
+     * @param songUrl
+     * @return
+     */
     @GetMapping("/download")
     @ResponseBody
     public Map<String, Object> download(String songUrl) {
@@ -152,5 +159,17 @@ public class MusicLinkController {
         map.put("file", musicLinkServiceImpl.download(songUrl));
         map.put("fileName", fileName);
         return map;
+    }
+
+    /**
+     * 获取歌词文件
+     * @param lyricLink
+     * @return
+     */
+    @GetMapping("/lyric")
+    @ResponseBody
+    public String getSongLyric(String lyricLink) {
+
+        return musicLinkServiceImpl.getSongLyric(lyricLink);
     }
 }

@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>轻语音乐榜</title>
+    <title>青听音乐榜</title>
     <link href="css/style.min862f.css?v=4.1.0" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/index.css">
-    <link rel="shortcut icon" type="image/x-icon" href="images/logo1.png">
+    <link rel="shortcut icon" type="image/x-icon" href="images/weblogo.ico">
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
@@ -17,7 +17,7 @@
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
      style="overflow: auto;">
     <div class="modal-dialog" style="overflow: auto;">
-        <div class="modal-content" style="overflow: auto;">
+        <div class="modal-content" style="overflow: auto;width: 520px;">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="false">X</button>
                 <h4 class="modal-title" id="myModalLabel">账号密码登录</h4>
@@ -26,11 +26,8 @@
                 <form id="test" class="form-horizontal" role="form" action="/user/loginPage" method="post"
                       style="padding-left: 50px;">
                     <div class="form-group">
-                        <img src="images/logo2.png" style="display: block; padding: 20px 151px">
-                        <div class="erweima"><img src="images/二维码2.jpg" style="position: absolute;width: 130px;
-						height: 130px;bottom: 136px;right: 31px;">
-                            <p style="position: absolute;right: 64px;bottom: 106px;">联系我们</p>s
-                        </div>
+                        <img src="images/webicon.png" style="display: block; margin-left:150px;margin-bottom:10px;width: 177px; height: 52px;">
+
                         <label class="col-sm-2 control-label">
                             <span class="glyphicon glyphicon-user">账号</span>
                         </label>
@@ -81,8 +78,8 @@
 <div style="width: 100%;height: 80px; background-color:#fff;position: relative;">
     <div style="position: absolute;bottom: -5px;height: 5px;width: 100%;background-color:#fff;z-index: -1;"></div>
     <div class="search1">
-        <div class="logo1" style="width: 153px; padding: 20.6px 0; display: inline-block;"><a
-                href="/index.html"><img src="images/logo2.png" alt=""></a>
+        <div class="logo1" style="width: 153px; padding: 20.6px 0; display: inline-block;">
+            <a href="index.html"><img src="images/webicon.png" alt="" style="width: 153px; height: 37px;"></a>
         </div>
         <nav class="navmargin navbar navbar-default" role="navigation">
             <div class="shurukuang" style="padding: 20.6px 30px;">
@@ -131,28 +128,12 @@
         <ul>
             <li><a class=" erjicaidan2" href="/index.html">首页</a></li>
             <li><a class="gudingbeij erjicaidan2" href="#">榜单</a></li>
-            <li><a class="erjicaidan2" href="/mv.html" target="_blank">MV</a></li>
-            <li class="dropdown">
-                <a class="erjicaidan2" href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    更多 <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a class="erjicaidan" href="/musicRadio.html" target="_blank">电台</a>
-                    </li>
-                    <li><a class="erjicaidan" href="/songlist.html" target="_blank">歌单</a>
-                    </li>
-                    <li><a class="erjicaidan" href="/singer.html" target="_blank">歌手</a></li>
-                </ul>
-            </li>
+            <li><a class=" erjicaidan2" href="#">推荐</a></li>
+
         </ul>
         <ul>
             <li class="youfudong"><a href="/musicSearchTest.html" target="_blank">
                 <span class="glyphicon glyphicon-search" style="font-size: 14px"> 搜索</span></a></li>
-            <li class="youfudong"><a href="/musician.html" target="_blank">
-                <span class="glyphicon glyphicon-headphones" style="font-size: 14px"> 音乐人</span></a></li>
-            <li class="youfudong"><a href="/QQmusic.html" target="_blank">
-
-                <span class="glyphicon glyphicon-star-empty" style="font-size: 14px"> 在线播放</span></a></li>
         </ul>
     </div>
     </div>
@@ -326,7 +307,7 @@
                                 $.cookie("song_name", data.data.list[i].songName, {expires: 7, path: "/"});
                                 $.cookie("song_singer", data.data.list[i].singer, {expires: 7, path: "/"});
                                 $.cookie("song_photo", data.data.list[i].imageLink, {expires: 7, path: "/"});
-                                window.location.href = "/QQmusic.html";
+                                window.location.href = "/play.html";
                             });
                         }
                         musicPlay(i);
