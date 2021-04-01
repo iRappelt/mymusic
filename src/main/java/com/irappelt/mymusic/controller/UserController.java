@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/user")
@@ -46,12 +47,10 @@ public class UserController {
         if (user == null) {
             return webResponse.getWebResponse(201, "用户或密码错误！", null);
         }
-        session.setAttribute("tname", user.getUserName());
-        session.setAttribute("userId", user.getUserId());
 
         Map<String, String> paramMap = new HashMap<>(16);
-        paramMap.put("user_name", user_name);
-        paramMap.put("user_password", user_password);
+        paramMap.put("userName", user_name);
+        paramMap.put("userAvatar", user.getAvatarLink());
 
         return webResponse.getWebResponseUserId(200, "登录成功", paramMap, user.getUserId());
 
@@ -77,25 +76,26 @@ public class UserController {
      */
     @RequestMapping(value = "/addOrEditUser", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public WebResponse addOrEditTest(String user_id, @RequestParam(required = false) String user_name, @RequestParam(required = false) String user_password) {
-        if (userServiceImpl.isRepeatUser(user_name)) {
+    public WebResponse addOrEditTest(String userId, @RequestParam String userName, @RequestParam String userPassword, MultipartFile userAvatar) {
+        if (userServiceImpl.isRepeatUser(userName)) {
             return webResponse.getWebResponse(201, "用户名已存在，请重新注册！", null);
         }
         Map<String, String> paramMap = new HashMap<>(16);
-        paramMap.put("user_id", user_id);
-        paramMap.put("user_name", user_name);
-        paramMap.put("user_password", user_password);
-        if (user_id == null || user_id.length() == 0) {
-            User user = userServiceImpl.addUser(user_name, user_password);
+        paramMap.put("user_id", userId);
+        paramMap.put("user_name", userName);
+        if (userId == null || userId.length() == 0) {
+            User user = userServiceImpl.addUser(userName, userPassword, userAvatar);
             if (user == null) {
                 return webResponse.getWebResponse(201, "注册失败：用户名和密码必填", paramMap);
             }
+            paramMap.put("user_avatar", user.getAvatarLink());
             return webResponse.getWebResponse(200, "注册成功", paramMap);
         } else {
-            User user = userServiceImpl.updateUser(user_id, user_name, user_password);
+            User user = userServiceImpl.updateUser(userId, userName, userPassword);
             if (user == null) {
                 return webResponse.getWebResponse(201, "更新失败：不存在该用户", paramMap);
             }
+            paramMap.put("user_avatar", user.getAvatarLink());
             return webResponse.getWebResponse(200, "更新成功", paramMap);
         }
     }

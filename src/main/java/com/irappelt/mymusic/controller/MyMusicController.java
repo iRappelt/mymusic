@@ -49,18 +49,14 @@ public class MyMusicController {
      */
     @RequestMapping(value = "/getMyMusicList", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public WebResponse getMyMusicList(@RequestParam(value = "user_name") String userName, @RequestParam(value = "user_password") String userPassword) {
+    public WebResponse getMyMusicList(@RequestParam(value = "user_id") String userId) {
 
-        Optional.ofNullable(userName).orElseThrow(() -> new ParamVerifyException("用户名不允许为空"));
-        Optional.ofNullable(userPassword).orElseThrow(() -> new ParamVerifyException("用户密码不允许为空"));
+        Optional.ofNullable(userId).orElseThrow(() -> new ParamVerifyException("用户Id不允许为空"));
 
         Map<String, Object> map = new HashMap<>(16);
-        User user = userServiceImpl.getUser(userName, userPassword);
-        List<MyMusic> list = this.myMusicServiceImpl.getMyMusicList(user.getUserId());
-        List<String> songIdList = list.stream().map(MyMusic::getSongId).collect(Collectors.toList());
-        List<MusicLink> musicList = this.musicLinkServiceImpl.getMusicListByIdList(songIdList);
+        List<MusicLink> musicList = this.musicLinkServiceImpl.getMusicListByUserId(userId);
         map.put("list", musicList);
-        if (list != null && list.size() > 0) {
+        if (musicList.size() > 0) {
             return webResponse.getWebResponse(200, "根据条件获取分页数据成功", map);
         } else {
             return webResponse.getWebResponse(202, "no record!", map);
@@ -84,6 +80,44 @@ public class MyMusicController {
             return webResponse.getWebResponse(200, "删除成功", null);
         }
         return webResponse.getWebResponse(201, "删除失败", null);
+    }
+
+    /**
+     * 校验歌曲是否在我的收藏列表
+     */
+    @RequestMapping(value = "/isCollected", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public WebResponse isCollected(@RequestParam("user_id") String userId, @RequestParam("song_id") String songId) {
+
+        WebResponse webResponse = new WebResponse();
+
+        if (userId == null || songId == null) {
+            return webResponse.getWebResponse(201, "查询失败:user_id/song_id未传", null);
+        }
+        boolean isCollected = this.myMusicServiceImpl.myMusicIsRepeat(songId, userId);
+        if (isCollected) {
+            return webResponse.getWebResponse(200, "歌曲已收藏", null);
+        }
+        return webResponse.getWebResponse(201, "歌曲未收藏", null);
+    }
+
+
+    /**
+     * 获得推荐音乐
+     * @param userId 用户id
+     * @return
+     */
+    @RequestMapping(value = "/getRecommendMusic", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public WebResponse getRecommendMusic(String userId) {
+        List<MusicLink> recommendMusic = musicLinkServiceImpl.getRecommendMusic(userId);
+        Map<String, Object> map = new HashMap<>(16);
+        map.put("list", recommendMusic);
+        if (recommendMusic != null && recommendMusic.size() > 0) {
+            return webResponse.getWebResponse(200, "获取推荐音乐成功", map);
+        } else {
+            return webResponse.getWebResponse(202, "获取推荐音乐失败", map);
+        }
     }
 
 }

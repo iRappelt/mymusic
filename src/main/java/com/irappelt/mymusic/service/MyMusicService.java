@@ -31,5 +31,19 @@ public interface MyMusicService {
      */
     int deleteMyMusic(String songId, String userId);
 
+    /**
+     * 歌曲是否已经收藏
+     * @param songId
+     * @param userId
+     * @return
+     */
     boolean myMusicIsRepeat(String songId, String userId);
+
+    /**
+     * 将播放次数加1
+     * @param userId
+     * @param songId
+     * @return
+     */
+    int addPlayedNum(String userId, String songId);
 }

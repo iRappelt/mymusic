@@ -105,7 +105,7 @@
 
                         function musicPlay(i) {
                             $("table").on('click', '.sName' + i, function () {
-                                $.cookie("last_song_id", $.cookie("song_id"));// 保存上一个歌id
+                                $.cookie("last_song_id", $.cookie("song_id"), {path: "/"});// 保存上一个歌id
                                 $.cookie("song_link", data.data.list[i].songLink, {expires: 7, path: "/"});
                                 $.cookie("song_name", data.data.list[i].songName, {expires: 7, path: "/"});
                                 $.cookie("song_singer", data.data.list[i].singer, {expires: 7, path: "/"});
@@ -115,7 +115,6 @@
                                 if (window.localStorage.getItem("new_page") != null) {
                                     window.localStorage.setItem("new_page", String((new Date()).getMilliseconds()));// 不开新页面
                                 } else {
-                                    $.cookie("new_song", "1", {expires: 7, path: "/"});
                                     window.open("/play.html");
                                 }
                             });
@@ -124,10 +123,8 @@
                         musicPlay(i);
 
                         function musicCollect(i) {
-                            $("#sFav").unbind();
                             $("table").on('click', '#sFav' + i, function () {
-                                $.cookie("song_id", data.data.list[i].songId, {expires: 7, path: "/"});
-                                $.cookie("song_name", data.data.list[i].songName, {expires: 7, path: "/"});
+                                $.cookie("song_id_fav", data.data.list[i].songId);
                                 fav(i);
                             });
                         }
@@ -162,13 +159,11 @@
             url: "/musicLink/addMusicCollect",
             type: "post",
             data: {
-                "songName": $.cookie("song_name"),
-                "song_id": $.cookie("song_id"),
-                "user_name": $.cookie("user_name"),
-                "user_password": $.cookie("user_password")
+                "song_id": $.cookie("song_id_fav"),
+                "user_id": $.cookie("user_id")
             },
             success: function (data) {//webspond
-                if (data.statusCode == "200") {
+                if (data.statusCode == 200) {
                     $('#sFav' + j).css('color', '#ff69b4');
                     alert("歌曲收藏成功，请去我的音乐查看！")
 

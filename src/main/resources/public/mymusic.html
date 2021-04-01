@@ -107,7 +107,6 @@
             <!-- 图标加上搜索框结束 -->
             <div id="col10" class="dengluzhuce">
                 <a class="mymusic" href="#">我的音乐</a>
-                <a class="mymusic" href="/huiyuanzhongxin.html ">会员中心</a>
                 <span class="mymusic">|</span>
                 <img id="touxiang" src="images/touxiang.png" width="40px" height="40px"
                      style="display: inline-block; width: 40px;height: 40px;border:0;border-radius: 40px;margin-bottom: 5px;">
@@ -162,21 +161,21 @@
                 <span class="gztit">粉丝</span>
             </li>
         </ul>
-        <div class="headernav">
+       <!-- <div class="headernav">
             <a href="#" class="hnava">我喜欢</a>
             <a href="#" class="hnava">我创建的歌单</a>
             <a href="#" class="hnava">关注</a>
             <a href="#" class="hnava">粉丝</a>
             <a href="#" class="hnava">我上传的视频</a>
-        </div>
+        </div>-->
     </div>
 </div>
 <div class="content">
     <div class="contentnav">
-        <a href="#" class="Cnava">歌曲&nbsp;651</a>
-        <a href="#" class="Cnava">歌单&nbsp;166</a>
-        <a href="#" class="Cnava">专辑&nbsp;61</a>
-        <a href="#" class="Cnava">视频&nbsp;45</a>
+        <!--<a href="#" class="Cnava">歌曲&nbsp;651</a>-->
+        <!--<a href="#" class="Cnava">歌单&nbsp;166</a>-->
+        <!--<a href="#" class="Cnava">专辑&nbsp;61</a>-->
+        <!--<a href="#" class="Cnava">视频&nbsp;45</a>-->
     </div>
     <div class="liebiao">
         <div class="liebiaobar">
@@ -237,12 +236,12 @@
 <script type="text/javascript">
 
 
-    if ($.cookie("user_name") != undefined && $.cookie("user_name") != "") {//如果用户名不等于1且不等于未定义，则继续执行
+    if ($.cookie("user_name") != undefined && $.cookie("user_name") != "") {//如果用户名不等于""且不等于未定义，则继续执行
         $("#userName").text("账号：" + $.cookie("user_name"));//将未登录3个字替换为用户名
         $("#zhuXiao").text("注销");//将注销加在用户名后方
         $(".mingzijuzhong").text("用户: " + $.cookie("user_name"));//替换大头像下面的用户名
-        document.getElementById("touxiang").src = "images/touxiang2.jpg";//替换原始头像
-        document.getElementById("myphoto").src = "images/touxiang2.jpg";//替换原始头像
+        $("#touxiang").attr("src", $.cookie("user_avatar"));//替换原始头像
+        $("#myphoto").attr("src", $.cookie("user_avatar"));//替换原始头像
         $("#display1").attr("style", "display:none;");//隐藏登录按钮
 
         getList2();
@@ -260,9 +259,7 @@
             url: "myMusic/getMyMusicList",      //后台获取整个数据库方法的地址
             type: "POST",
             data: {
-                "user_name": $.cookie("user_name"),
-                "user_password": $.cookie("user_password"),
-                "song_id": $.cookie("song_id"),
+                "user_id": $.cookie("user_id")
             },
             success: function (data) {
                 if (data.statusCode == "200") {
@@ -281,7 +278,18 @@
 
                         function play(i) {
                             $("table").on('click', '.sName' + i, function () {//由于该标签是动态添加的，所以一般的选择器没有办法直接选中，因此需要借用事件委托来完成选择并添加click事件
-                                fn(i);                                          //调用fn方法，方法的作用见后方备注
+                                $.cookie("last_song_id", $.cookie("song_id"), {path: "/"});// 保存上一个歌id
+                                $.cookie("song_link", data.data.list[i].songLink, {expires: 7, path: "/"});
+                                $.cookie("song_name", data.data.list[i].songName, {expires: 7, path: "/"});
+                                $.cookie("song_singer", data.data.list[i].singer, {expires: 7, path: "/"});
+                                $.cookie("song_photo", data.data.list[i].imageLink, {expires: 7, path: "/"});
+                                $.cookie("song_lyric", data.data.list[i].lyricLink, {expires: 7, path: "/"});
+                                $.cookie("song_id", data.data.list[i].songId, {expires: 7, path: "/"});
+                                if (window.localStorage.getItem("new_page") != null) {
+                                    window.localStorage.setItem("new_page", String((new Date()).getMilliseconds()));// 不开新页面
+                                } else {
+                                    window.open("/play.html");
+                                }
                             });
                         }
 
@@ -289,31 +297,13 @@
 
                         function play1(i) {
                             $("table").on('click', '#sFav' + i, function () {  //i的值不能由jq直接调用，所以利用play的方法传值进入
-                                fn1(i);//调用fn1方法来保存cookie
+                                $.cookie("del_song_id", data.data.list[j].songId);      //将歌曲id保存下来，点击删除按钮时，将值传入后台，删除数据库
                                 dle(); //调用del方法删除，该方法为ajax，所以此处嵌套ajax，需定义 async: false,异步执行才不会出错
                             });
                         }
 
                         play1(i);
                     }
-
-                    function fn(j) {//
-                        $.cookie("song_link", data.data.list[j].songLink, {expires: 7, path: "/"});//
-                        $.cookie("song_name", data.data.list[j].songName, {expires: 7, path: "/"});//   保存后台传入的相关信息和链接进入cookie，在播放页面直接将cookie的值调用出来，
-                        $.cookie("song_singer", data.data.list[j].singer, {expires: 7, path: "/"});//    然后替换原有的信息和播放路径，完成点击歌曲播放功能
-                        $.cookie("song_photo", data.data.list[j].imageLink, {expires: 7, path: "/"});
-                        $.cookie("song_lyric", data.data.list[j].lyricLink, {expires: 7, path: "/"});
-                        $.cookie("song_id", data.data.list[j].songId, {expires: 7, path: "/"});
-                        $.cookie("song_index", j, {expires: 7, path: "/"});
-
-                        window.location.href = "/play.html";//跳转页面
-                    }
-
-                    function fn1(j) {
-
-                        $.cookie("ml_id", data.data.list[j].songId, {expires: 7, path: "/"});      //将歌曲id保存下来，点击删除按钮时，将值传入后台，删除数据库
-                    }
-
 
                     $("table tbody").html(str);
                 } else if (data.statusCode == "202") {//如果后台返回202则提示歌曲已收藏
@@ -332,15 +322,14 @@
             url: "/myMusic/deleteMyMusic",//后台地址
             type: "post",//post请求方式
             data: {
-                "song_id": $.cookie("ml_id"),//传入歌曲id
+                "song_id": $.cookie("del_song_id"),//传入歌曲id
                 "user_id": $.cookie("user_id"),//传入用户id
             },
             success: function (data) {//webspond
                 if (data.statusCode == "200") {
                     window.location.reload();//刷新页面
                     alert("已成功从收藏列表移除");//提示删除成功
-
-                    //location.reload();
+                    window.location.reload();
                 } else {
                     alert("add error!" + data.statusMsg);
                 }

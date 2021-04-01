@@ -1,10 +1,10 @@
-
 /* CSS Document */
 .header ul li a {
-	color: #0c85cc;
-	text-decoration:none
+    color: #0c85cc;
+    text-decoration: none
 }
-.nav .n1 li a{
+
+.nav .n1 li a {
     display: inline;
     color: #fff;
     font-size: 16px;
@@ -12,10 +12,11 @@
     line-height: 60px;
     padding: 0px 11px;
     text-align: center;
-	text-decoration: none;
+    text-decoration: none;
     outline: 0;
-	font-family: Microsoft YaHei;
+    font-family: Microsoft YaHei;
 }
+
 .nav .n2 li a {
     display: inline;
     float: left;
@@ -25,50 +26,50 @@
     font-size: 16px;
     color: #fff;
 }
+
 .nav a {
-	text-decoration: none;
+    text-decoration: none;
     outline: 0;
 }
+
 .nav li {
     float: left;
     position: relative;
 }
 
-
 * {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 }
+
 #header {
-	width: 100%;
-	height: 40px;
-	background-color: #fff;
+    width: 100%;
+    height: 40px;
+    background-color: #fff;
 }
 
 .header {
-	width: 960px;
-	margin: auto;
+    width: 960px;
+    margin: auto;
 }
 
 ul {
-	list-style: none;
+    list-style: none;
 }
 
 li {
-	float: right;
-	margin-top: auto;
-	margin-bottom: auto;
+    float: right;
+    margin-top: auto;
+    margin-bottom: auto;
 }
-
-
 
 .header ul li span {
 
-	padding-left: 30px;
+    padding-left: 30px;
 }
 
 #nav {
-	position: relative;
+    position: relative;
     z-index: 1000;
     width: 100%;
     min-width: 960px;
@@ -77,7 +78,7 @@ li {
 }
 
 .nav {
-	width: 960px;
+    width: 960px;
     height: 60px;
     margin: 0 auto;
     font-family: Microsoft YaHei;
@@ -85,42 +86,38 @@ li {
 }
 
 #nav h1.logo {
-	float: left;
+    float: left;
     display: inline;
     padding: 10px 10px 0px 0px;
 }
 
 .n2_new {
-	float: right;
+    float: right;
     display: inline;
-	margin-top: -9px;
+    margin-top: -9px;
 }
 
 #content {
-	width: 960px;
-	height: 550px;
+    width: 960px;
+    height: 590px;
     margin-top: 40px;
-	margin-left: auto;
-	margin-right: auto;
-	border: 1px solid #008ad4;
-	border-top: 9px solid #008ad4;
-	margin-bottom: 40px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #008ad4;
+    border-top: 9px solid #008ad4;
+    margin-bottom: 40px;
 }
-
-
 
 .boxb {
-	width: 500px;
-	height: 384px;
-	margin: 0 auto;
-	padding-top: 80px;
-		text-align: center;
+    width: 500px;
+    height: 384px;
+    margin: 0 auto;
+    padding-top: 10px;
+    text-align: center;
 }
 
-
-
 .DengZhuShang {
-	border: 1px solid #fff;
+    border: 1px solid #fff;
     padding-top: 8px;
     text-align: center;
     font-size: 14px;
@@ -128,8 +125,8 @@ li {
 }
 
 .DZS {
-	top: 8px;
-	color: #fff;
+    top: 8px;
+    color: #fff;
     width: 40px;
     height: 38px;
     position: relative;
@@ -139,24 +136,22 @@ li {
 }
 
 .DZS1 {
-	float: right;
-	font: 12px/1.5 \5b8b\4f53, Arial, Verdana;
+    float: right;
+    font: 12px/1.5 \5b8b\4f53, Arial, Verdana;
 }
 
-
-
 .zhucetupian {
-	
-	height: 84px;
+
+    height: 84px;
 }
 
 .zhucetupian1 {
-	margin: 0 auto;;
+    margin: 0 auto;;
 }
 
 .footer {
-	padding-bottom: 50px;
-	background: #2c323b;
+    padding-bottom: 50px;
+    background: #2c323b;
 }
 
 .footer .links {
@@ -166,36 +161,42 @@ li {
     padding: 15px 0;
     font-size: 12px;
     color: #b1b3b9;
-	text-align: center;
+    text-align: center;
 }
 
 a {
     text-decoration: none;
-	    font-size: 100%;
-	    outline: none;
+    font-size: 100%;
+    outline: none;
 }
+
 .footer .links a {
     color: #b1b3b9;
     padding: 10px;
 }
+
 .footer .links a:hover {
-	color: blue;
+    color: blue;
 }
+
 .footer .copyright {
     width: 1000px;
     margin: 40px auto 0;
 }
+
 .footer .copyright p {
     line-height: 30px;
     text-align: center;
     color: #b1b3b9;
 }
-body{
-    font: 13px/1.5 \5FAE\8F6F\96C5\9ED1,simsun,sans-serif;
+
+body {
+    font: 13px/1.5 \5FAE\8F6F\96C5\9ED1, simsun, sans-serif;
 }
+
 .logo2 {
-	margin-top:5px;
-	padding-top: 0;
+    margin-top: 5px;
+    padding-top: 0;
 }
 
 

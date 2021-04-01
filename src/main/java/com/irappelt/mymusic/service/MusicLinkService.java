@@ -1,6 +1,7 @@
 package com.irappelt.mymusic.service;
 
 
+import com.irappelt.mymusic.common.WebResponse;
 import com.irappelt.mymusic.model.po.MusicLink;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,11 +25,10 @@ public interface MusicLinkService {
      * 获取榜单
      * @param pageNo
      * @param pageSize
-     * @param isAsc
-     * @param orderField
+     * @param topType
      * @return
      */
-    List<MusicLink> getMusicList(int pageNo, int pageSize, boolean isAsc, String orderField);
+    List<MusicLink> getMusicList(int pageNo, int pageSize, Integer topType);
 
     /**
      * 获取所有数据条数
@@ -60,4 +60,25 @@ public interface MusicLinkService {
     String download(String songUrl);
 
     String getSongLyric(String lyricLink);
+
+    /**
+     * 根据用户id查询用户收藏的歌曲信息
+     * @param userId
+     * @return
+     */
+    List<MusicLink> getMusicListByUserId(String userId);
+
+    /**
+     * 将播放次数加1
+     * @param songId 歌曲id
+     * @return
+     */
+    int addPlayedNum(String songId);
+
+    /**
+     * 个性化推荐我的音乐
+     * @param userId
+     * @return
+     */
+    List<MusicLink> getRecommendMusic(String userId);
 }

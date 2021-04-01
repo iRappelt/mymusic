@@ -55,6 +55,11 @@ public class OssStorage {
      */
     private static final String SONG_LYRIC_BUCKET_NAME = "irappelt-song-lyric";
 
+    /**
+     * userAvatarBucketName
+     */
+    private static final String USER_AVATAR_BUCKET_NAME = "irappelt-user-avatar";
+
 
     /**
      * 文件上传
@@ -98,6 +103,34 @@ public class OssStorage {
             result.put("songFileUrl", songFileUrl);
 
             return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FileAnalysisException(e.getMessage());
+        } finally {
+            if (ossClient != null) {
+                ossClient.shutdown();
+            }
+        }
+    }
+
+
+    /**
+     * 头像上传
+     * @param userId 用户id
+     * @param userAvatar 头像文件
+     * @return 头像链接
+     */
+    public static String avatarUpload(String userId, MultipartFile userAvatar) {
+        OSS ossClient = null;
+        // 生成文件名
+        String avatarFileName = userId + ".png";
+        try (InputStream inputStream = userAvatar.getInputStream()) {
+            // OSS
+            ossClient = new OSSClientBuilder().build(END_POINT, ACCESS_KEY_ID, ACCESS_KEY_SECRET);
+            // 上传图片
+            ossClient.putObject(USER_AVATAR_BUCKET_NAME, avatarFileName, inputStream);
+            // 生成URL
+            return "https://" + USER_AVATAR_BUCKET_NAME + "." + END_POINT + "/" + avatarFileName;
         } catch (Exception e) {
             e.printStackTrace();
             throw new FileAnalysisException(e.getMessage());
@@ -198,6 +231,10 @@ public class OssStorage {
 
     public static void main(String[] args) {
         System.out.println(Integer.toHexString((int) System.currentTimeMillis()));
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmsss");
+        String part1 = sdf.format(date);
+        System.out.println(part1);
     }
 
 

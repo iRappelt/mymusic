@@ -2,6 +2,7 @@ package com.irappelt.mymusic.service;
 
 
 import com.irappelt.mymusic.model.po.User;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author: huaiyu
@@ -18,7 +19,7 @@ public interface UserService {
 
     User resetPassword(String userName, String newPassword);
 
-    User addUser(String userName, String userPassword);
+    User addUser(String userName, String userPassword, MultipartFile userAvatar);
 
     User updateUser(String userId, String newUserName, String newPassword);
 

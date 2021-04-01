@@ -51,4 +51,30 @@ public class MusicLink {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
+
+    @Column(name = "UpdateTime")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
+
+    @Column(name = "singerId")
+    private String singerId;
+
+    @Column(name = "typeName")
+    private String typeName;
+
+    @Column(name = "typeId")
+    private String typeId;
+
+    @Column(name = "songTime")
+    private String songTime;
+
+    @Column(name = "priority")
+    private Integer priority;
+
+    @Column(name = "uploaderId")
+    private String uploaderId;
+
+    @Column(name = "uploaderName")
+    private String uploaderName;
 }

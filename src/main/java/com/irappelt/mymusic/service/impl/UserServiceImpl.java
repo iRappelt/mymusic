@@ -3,10 +3,12 @@ package com.irappelt.mymusic.service.impl;
 import com.irappelt.mymusic.dao.UserRepository;
 import com.irappelt.mymusic.model.po.User;
 import com.irappelt.mymusic.service.UserService;
+import com.irappelt.mymusic.util.OssStorage;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.UUID;
@@ -37,8 +39,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User addUser(String userName, String userPassword) {
-        if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(userPassword)) {
+    public User addUser(String userName, String userPassword, MultipartFile userAvatar) {
+        if (StringUtils.isEmpty(userName) || StringUtils.isEmpty(userPassword) || userAvatar == null) {
             return null;
         }
         User user = new User();
@@ -47,6 +49,8 @@ public class UserServiceImpl implements UserService {
         user.setUserPassword(userPassword);
         user.setCreateTime(new Date());
         user.setUpdateTime(new Date());
+        String avatarLink = OssStorage.avatarUpload(user.getUserId(), userAvatar);
+        user.setAvatarLink(avatarLink);
         return userRepository.save(user);
     }
 

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,18 +25,20 @@ public class MyMusicServiceImpl implements MyMusicService {
     @Override
     public MyMusic addToMyMusic(MyMusic myMusic) {
         myMusic.setCollectId(UUID.randomUUID().toString().replaceAll("-", ""));
+
+        myMusic.setCreateTime(new Date());
+        myMusic.setUpdateTime(new Date());
+        myMusic.setPlayedNum(0);
         return myMusicRepository.save(myMusic);
     }
 
     @Override
     public List<MyMusic> getMyMusicList(String userId) {
-        MyMusic myMusic = new MyMusic();
-        myMusic.setUserId(userId);
-        return myMusicRepository.findAll(Example.of(myMusic));
+        return myMusicRepository.queryAllByUserIdOrderByCreateTimeAsc(userId);
     }
 
-    @Override
     @Transactional(rollbackFor = Exception.class)
+    @Override
     public int deleteMyMusic(String songId, String userId) {
         return myMusicRepository.deleteBySongIdAndUserId(songId, userId);
     }
@@ -46,5 +49,11 @@ public class MyMusicServiceImpl implements MyMusicService {
         myMusic.setSongId(songId);
         myMusic.setUserId(userId);
         return myMusicRepository.findOne(Example.of(myMusic)).orElse(null) != null;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public int addPlayedNum(String userId, String songId) {
+        return myMusicRepository.addPlayedNum(userId, songId);
     }
 }

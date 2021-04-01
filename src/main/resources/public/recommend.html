@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>青听音乐榜</title>
+    <title>音乐推荐</title>
     <link href="css/style.min862f.css?v=4.1.0" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/index.css">
@@ -26,7 +26,8 @@
                 <form id="test" class="form-horizontal" role="form" action="/user/loginPage" method="post"
                       style="padding-left: 50px;">
                     <div class="form-group">
-                        <img src="images/webicon.png" style="display: block; margin-left:150px;margin-bottom:10px;width: 177px; height: 52px;">
+                        <img src="images/webicon.png"
+                             style="display: block; margin-left:150px;margin-bottom:10px;width: 177px; height: 52px;">
 
                         <label class="col-sm-2 control-label">
                             <span class="glyphicon glyphicon-user">账号</span>
@@ -87,7 +88,8 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="input-group">
-                                <input id="songName" name="songName" type="text" class="form-control" placeholder="为音乐而生">
+                                <input id="songName" name="songName" type="text" class="form-control"
+                                       placeholder="为音乐而生">
                                 <span class="input-group-btn">
 								<button onclick="search()" class="btn btn-default" type="button">
 									搜索
@@ -127,14 +129,14 @@
     <div class="big3">
         <ul>
             <li><a class=" erjicaidan2" href="/index.html">首页</a></li>
-            <li><a class="gudingbeij erjicaidan2" href="#">榜单</a></li>
-            <li><a class=" erjicaidan2" href="/recommend.html">推荐</a></li>
+            <li><a class=" erjicaidan2" href="/bangdan.html">榜单</a></li>
+            <li><a class="gudingbeij erjicaidan2" href="#">推荐</a></li>
 
         </ul>
         <ul>
             <li class="youfudong">
                 <a href="/search.html" target="_blank">
-                <span class="glyphicon glyphicon-search" style="font-size: 14px"> 搜索</span>
+                    <span class="glyphicon glyphicon-search" style="font-size: 14px"> 搜索</span>
                 </a>
             </li>
         </ul>
@@ -161,24 +163,25 @@
                 </div>
             </div>
         </div>-->
-        <div class="panel panel-success">
+        <div class="panel panel-info">
             <div class="panel-heading">
                 <h4 class="panel-title">
 				<span class="nonostyle" data-toggle="collapse" data-parent="#accordion"
                       href="#collapseTwo">
-					热门榜单
+					推荐歌曲
                     </span>
                 </h4>
             </div>
             <div id="collapseTwo" class="panel-collapse collapse in">
-                <div class="panel-body">
-                    <a href="#top1" id="top1">飙升榜</a>
-                    <a href="#top2" id="top2">热歌榜</a>
-                    <a href="#top3" id="top3">新歌榜</a>
-                    <a href="#top4" id="top4">欧美榜</a>
-                    <a href="#top5" id="top5">日韩榜</a>
-                    <a href="#top6" id="top6">怀旧榜</a>
-                    <a href="#top7" id="top7">原创榜</a>
+                <div class="panel-body" style="padding: 0px;">
+                    <img src="../images/recommend.jpg" style="width: 217px;"/>
+                    <!--<a href="#top1" id="top1">飙升榜</a>-->
+                    <!--<a href="#top2" id="top2">热歌榜</a>-->
+                    <!--<a href="#top3" id="top3">新歌榜</a>-->
+                    <!--<a href="#top4" id="top4">欧美榜</a>-->
+                    <!--<a href="#top5" id="top5">日韩榜</a>-->
+                    <!--<a href="#top6" id="tp6">怀旧榜</a>-->
+                    <!--<a href="#top7" id="top7">原创榜</a>-->
                 </div>
             </div>
         </div>
@@ -251,16 +254,8 @@
 <script type="text/javascript" src="js/vue.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        getList(1, 1);
-        $("#top1").click(function () {
-            getList(1, 1)
-        });
-        $("#top2").click(function () {
-            getList(1, 2)
-        });
-        $("#top3").click(function () {
-            getList(1, 3)
-        });
+        getList(1);
+
     });
 
     // 非管理员隐藏音乐文件上传
@@ -269,15 +264,15 @@
     }
 
     // 获取榜单列表
-    function getList(pageNo, topType) {
+    function getList(pageNo) {
         $.ajax({
-            url: "musicLink/getMusicLinkList",
+            url: "myMusic/getRecommendMusic",
             type: "POST",
-            data: "pageNo=" + pageNo+"&topType="+topType,
+            data: {
+                "userId": $.cookie("user_id")
+            },
             success: function (data) {
-                if (data.statusCode == "200" || data.statusCode == "202") {
-                    let totalPage = 5;
-                    pageTools(pageNo, totalPage, topType);//tools里的方法，BootStrap分页组件
+                if (data.statusCode == "200") {
 
                     var str = '';
                     for (var i = 0; i < data.data.list.length; i++) {
@@ -285,7 +280,7 @@
 
                         str += '<tr>'
                             + '<td class="number111"  style="padding: 14px;border-bottom: 1px solid #eee; width: 100px;text-align: center;">' + ((pageNo - 1) * 20 + a) + '</td>'
-                            + '<td  style="padding: 14px;border-bottom: 1px solid #eee;width: 600px;text-align: center;"><a class=sName' + i + ' href="#">' + data.data.list[i].songName + '</a>' +
+                            + '<td  style="padding: 14px;border-bottom: 1px solid #eee;width: 600px;text-align: center;"><a id=sName' + i + ' href="#">' + data.data.list[i].songName + '</a>' +
                             '<span class="glyphicon glyphicon-heart" id=sFav' + i + ' style="color: #eee;float: right;"></span></td>'
                             + '<td style="padding: 14px;border-bottom: 1px solid #eee;width: 300px;text-align: center;"><a href="#">' + data.data.list[i].singer + '</a></td>'
                             + '</tr>';
@@ -320,6 +315,8 @@
                             fav(i);
                         });
                     }
+                } else {
+                    alert("暂无推荐歌曲，快去听歌吧！");
                 }
 
             },
@@ -328,6 +325,7 @@
             }
         })
     }
+
     // 收藏
     function fav(j) {
         $.ajax({

@@ -4,10 +4,12 @@
 <head>
     <meta charset="utf-8">
     <title>音乐上传</title>
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
+    <link href="../css/bootstrap-select.min.css" rel="stylesheet" />
     <link rel="shortcut icon" type="image/x-icon" href="images/weblogo.ico">
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap-select.js"></script>
     <link rel="stylesheet" href="css/register.css">
 </head>
 
@@ -15,7 +17,7 @@
 <div id="nav">
     <div class="nav">
         <ul class="n1" id="ulHeader">
-            <li class="home"><img src="images/webicon.png" width="170" height="40" alt="轻语音乐" class="logo2">
+            <li class="home"><img src="images/webicon.png" width="170" height="40" alt="青听音乐" class="logo2">
             </li>
         </ul>
     </div>
@@ -46,6 +48,22 @@
                                                placeholder="请输入歌手名" size="20">
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">歌曲类型:</label>
+                                    <label class="col-sm-4" style="margin: 0 47% 20px 0;">
+                                        <select name="songType" class="selectpicker show-tick form-control" data-size="5" multiple title="请选择音乐类型">
+                                            <option value="1">经典</option>
+                                            <option value="2">流行</option>
+                                            <option value="3">古风</option>
+                                            <option value="4">说唱</option>
+                                            <option value="5">华语</option>
+                                            <option value="6">欧美</option>
+                                            <option value="7">日韩</option>
+                                            <option value="8">DJ</option>
+                                        </select>
+                                    </label>
+                                </div>
+
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">封面图后缀:</label>
                                     <div class="col-sm-10" style="margin: 0 0 20px">
@@ -90,7 +108,6 @@
     <div class="links">
         <a hidefocus="true" href="#" target="_blank">开发者：</a>
         <a hidefocus="true" href="#" target="_blank">iRappelt</a>
-        <a hidefocus="true" href="#" target="_blank">广告合作</a>
     </div>
     <div class="copyright">
         <p style="-moz-user-select: text;-webkit-user-select: text;-ms-user-select: text; user-select:text">
@@ -103,6 +120,7 @@
 <script src="js/bootstrap-paginator.min.js"></script>
 <script src="js/jquery.validate.min.js"></script>
 <script src="js/tools.js"></script>
+<script src="js/jquery.cookie.js"></script>
 <script type="text/javascript">
 
     // $('#musicUpload').validate({
@@ -128,6 +146,8 @@
                         alert("上传成功");
                         // 刷新当前页面
                         window.location.reload();
+                    } else if(data.statusCode === 10010) {
+                        alert(data.statusMsg);
                     } else {
                         alert("上传失败，请稍后重试！");
                     }

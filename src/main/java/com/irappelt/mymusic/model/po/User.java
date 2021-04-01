@@ -31,4 +31,7 @@ public class User {
     @Column(name = "UpdateTime")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
+
+    @Column(name = "AvatarLink")
+    private String avatarLink;
 }

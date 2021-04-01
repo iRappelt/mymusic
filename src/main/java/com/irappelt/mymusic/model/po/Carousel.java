@@ -11,23 +11,30 @@ import javax.persistence.Table;
 import java.util.Date;
 
 /**
- * @author: huaiyu
- * @date: Created in 2021/1/29 10:05
+ * Created with IntelliJ IDEA.
+ *
+ * @author iRappelt
+ * @project: mymusic
+ * @description:
+ * @date: 2021/04/01 23:23
+ * @version: v1.0
  */
 @Data
 @Entity
-@Table(name = "MyMusic")
-public class MyMusic {
-
+@Table(name = "Carousel")
+public class Carousel {
     @Id
-    @Column(name = "CollectId")
-    private String collectId;
+    @Column(name = "CarouselId")
+    private String carouselId;
 
-    @Column(name = "UserId")
-    private String userId;
+    @Column(name = "Description")
+    private String description;
 
-    @Column(name = "SongId")
-    private String songId;
+    @Column(name = "SongIds")
+    private String songIds;
+
+    @Column(name = "PicLinks")
+    private String picLinks;
 
     @Column(name = "CreateTime")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -38,7 +45,4 @@ public class MyMusic {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
-
-    @Column(name = "PlayedNum")
-    private Integer playedNum;
 }

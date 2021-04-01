@@ -2,6 +2,82 @@ $(function () {// 注意：此代码块页面刷新即加载
 
     /************注意Dom对象和jQuery对象的区别，有些方法只能Dom对象使用，所以只能将jQuery对象转换为Dom对象，比如$("audio")是jQuery对象，转换为Dom对象即$("aduio")[0]或者$("audio").get(0)***********/
 
+
+    /*********************************************获取收藏歌曲列表******************************************/
+    getList(false);
+
+    function getList(async) {
+        $.ajax({
+            url: "myMusic/getMyMusicList",
+            type: "POST",
+            async: async,// 注意此处要避免异步，虽然可能导致页面停顿，但是避免了元素未填充问题，防止后面调用元素的方法无效果
+            data: {
+                "user_id": $.cookie("user_id")
+            },
+            success: function (data) {
+                if (data.statusCode == "200") {
+
+                    var musicList = [];
+                    var str = '';
+                    for (var j = 0; j < data.data.list.length; j++) { // 填充播放列表
+                        var innerList = [];
+                        innerList.push(data.data.list[j].songLink);
+                        innerList.push(data.data.list[j].songName);
+                        innerList.push(data.data.list[j].singer);
+                        innerList.push(data.data.list[j].imageLink);
+                        innerList.push(data.data.list[j].lyricLink);
+                        innerList.push(data.data.list[j].songId);
+                        musicList.push(innerList);
+                    }
+                    window.localStorage.setItem("music_list", JSON.stringify(musicList));
+                    $.cookie("music_list_length", musicList.length, {path: "/"});
+
+                    for (var i = 0; i < data.data.list.length; i++) {
+                        var a = i + 1;
+                        str += '<li class="list_music" id="musicList' + i + '">\n' +
+                            '                        <div class="list_number" id="music_num_' + data.data.list[i].songId + '">' + a + '</div>\n' +
+                            '                        <div id="sName' + i + '" class="list_name" style="cursor: pointer;">' + data.data.list[i].songName +
+                            '                        </div>\n' +
+                            '<div><span class="glyphicon glyphicon-trash music_trash" id=sFav' + i + '></span></div>' +
+                            '                        <div class="list_singer">' + data.data.list[i].singer + '</div>\n' +
+                            // '                        <div class="list_time"><span class="time1">' + allTime + '</span>\n' +
+                            '                    </li>';
+
+                    }
+
+                    $("#sNamee").append(str);
+
+                    // 必须要元素填充到页面后才能绑定点击事件
+                    for (let i = 0; i < data.data.list.length; i++) {
+                        // 播放
+                        let tag1 = "#sName" + i;
+                        $(tag1).unbind("click");// 不移除的话，会有多个点击事件
+                        $(tag1).bind('click', function () {
+                            loopPlayMusic2(musicList, i);
+                        });
+
+                        // 删除收藏
+                        let tag2 = "#sFav" + i;
+                        $(tag2).unbind("click");// 不移除的话，会有多个点击事件
+                        $(tag2).bind('click', function () {
+                            $.cookie("song_id", musicList[i][5], {expires: 7, path: "/"});
+                            dle(i);
+                        });
+                    }
+
+                } else if (data.statusCode == "202") {
+                    $("#content_list").html("<div class='no_music_list'>你还未收藏歌曲哦！赶快去收藏吧...</div>");
+                } else {
+                    $("#content_list").html("<div class='no_music_list'>访问收藏列表失败，请稍后重试...</div>");
+                }
+            },
+            error: function () {
+                alert("系统错误，请联系管理员");
+                $("#content_list").html("<div class='no_music_list'>访问收藏列表失败，请稍后重试...</div>");
+            }
+        })
+    }
+
     /*********************************************文件下载******************************************/
     $('#musicDownload').click(function () {
         $.ajax({
@@ -35,118 +111,63 @@ $(function () {// 注意：此代码块页面刷新即加载
         return new Blob([u8arr], {type: "audio/mp3"});
     }
 
-    /*********************************************获取收藏歌曲列表******************************************/
-    getList2();
-
-    function getList2() {
-        $.ajax({
-            url: "myMusic/getMyMusicList",
-            type: "POST",
-            async: false,// 注意此处要避免异步，虽然可能导致页面停顿，但是避免了元素未填充问题，防止后面调用元素的方法无效果
-            data: {
-                "user_name": $.cookie("user_name"),
-                "user_password": $.cookie("user_password"),
-                "song_id": $.cookie("song_id")
-            },
-            success: function (data) {
-                if (data.statusCode == "200") {
-
-                    var musicList = [];
-                    var str = '';
-                    for (var i = 0; i < data.data.list.length; i++) { // 填充播放列表
-                        var innerList = [];
-                        innerList.push(data.data.list[i].songLink);
-                        innerList.push(data.data.list[i].songName);
-                        innerList.push(data.data.list[i].singer);
-                        innerList.push(data.data.list[i].imageLink);
-                        innerList.push(data.data.list[i].lyricLink);
-                        innerList.push(data.data.list[i].songId);
-                        musicList.push(innerList);
-                    }
-
-                    if ($.cookie("song_index") != undefined && $.cookie("song_index") != "" && $.cookie("song_index") != null) {
-                        loopPalyMusic(musicList, $.cookie("song_index"));
-                        $.removeCookie("song_index", {path: "/"});
-                    }
-
-                    if ($.cookie("new_song") != undefined && $.cookie("new_song") != "" && $.cookie("new_song") != null) {
-                        playMusic();
-                        $.removeCookie("new_song", {path: "/"});
-                    }
-
-                    for (var i = 0; i < data.data.list.length; i++) {
-                        var a = i + 1;
-                        str += '<li class="list_music" id="musicList' + i + '">\n' +
-                            '                        <div class="list_number" id="music_num_'+data.data.list[i].songId+'">' + a + '</div>\n' +
-                            '                        <div id= sName' + i + ' class="list_name" style="cursor: pointer;">' + data.data.list[i].songName +
-                            '                        </div>\n' +
-                            '<div><span class="glyphicon glyphicon-trash music_trash" id=sFav' + i + '></span></div>' +
-                            '                        <div class="list_singer">' + data.data.list[i].singer + '</div>\n' +
-                            // '                        <div class="list_time"><span class="time1">' + allTime + '</span>\n' +
-                            '                    </li>';
-
-
-                        // 播放
-                        function play(i) {
-                            $("#sNamee").on('click', '#sName' + i, function () {
-                                // $.cookie("last_song_id", $.cookie("song_id"));// 保存上一个歌id
-                                // $.cookie("song_id", data.data.list[i].songId, {expires: 7, path: "/"});
-                                // $.cookie("song_link", data.data.list[i].songLink, {expires: 7, path: "/"});
-                                // $.cookie("song_name", data.data.list[i].songName, {expires: 7, path: "/"});
-                                // $.cookie("song_singer", data.data.list[i].singer, {expires: 7, path: "/"});
-                                // $.cookie("song_photo", data.data.list[i].imageLink, {expires: 7, path: "/"});
-                                // $.cookie("song_lyric", data.data.list[i].lyricLink, {expires: 7, path: "/"});
-                                // window.location.href = "/play.html";
-                                // playMusic();
-                                loopPalyMusic(musicList, i);
-                            });
-                        }
-
-                        play(i);
-
-                        // 删除收藏
-                        function play1(i) {
-                            $("#sNamee").on('click', '#sFav' + i, function () {
-                                $.cookie("song_id", data.data.list[i].songId, {expires: 7, path: "/"});
-                                dle(i);
-                            });
-                        }
-
-                        play1(i);
-                    }
-
-                    $("#sNamee").append(str);
-                } else if (data.statusCode == "202") {
-                    $("#content_list").html("<div class='no_music_list'>你还未收藏歌曲哦！赶快去收藏吧...</div>");
-                } else {
-                    $("#content_list").html("<div class='no_music_list'>访问收藏列表失败，请稍后重试...</div>");
-                }
-            },
-            error: function () {
-                alert("系统错误，请联系管理员");
-                $("#content_list").html("<div class='no_music_list'>访问收藏列表失败，请稍后重试...</div>");
-            }
-        })
-    }
-
 
     /*********************************************删除收藏的歌曲******************************************/
-    function dle() {
+    function dle(musicIndex) {
         $.ajax({
             async: false,
             url: "/myMusic/deleteMyMusic",
             type: "post",
             data: {
-                "song_id": $.cookie("song_id"),
+                "song_id": $.cookie("song_id_del"),
                 "user_id": $.cookie("user_id")
             },
             success: function (data) {
-                if (data.statusCode == "200") {
-                    let str = "#musicList" + i;
-                    $(str).remove();
-                    alert("已成功从收藏列表移除");
+                if (data.statusCode == 200) {
+                    let musicList = JSON.parse(window.localStorage.getItem("music_list"));
+                    musicList.splice(musicIndex, 1);
+                    let str = "";
+
+                    for (var i = 0; i < musicList.length; i++) {
+                        var a = i + 1;
+                        str += '<li class="list_music" id="musicList' + i + '">\n' +
+                            '                        <div class="list_number" id="music_num_' + musicList[i][5] + '">' + a + '</div>\n' +
+                            '                        <div id= sName' + i + ' class="list_name" style="cursor: pointer;">' + musicList[i][1] +
+                            '                        </div>\n' +
+                            '<div><span class="glyphicon glyphicon-trash music_trash" id=sFav' + i + '></span></div>' +
+                            '                        <div class="list_singer">' + musicList[i][2] + '</div>\n' +
+                            // '                        <div class="list_time"><span class="time1">' + allTime + '</span>\n' +
+                            '                    </li>';
+
+
+                    }
+
+                    $("#sNamee").html(str);
+
+                    // 必须要元素填充到页面后才能绑定点击事件
+                    for (let i = 0; i < musicList.length; i++) {
+                        // 播放
+                        let tag1 = "#sName" + i;
+                        $(tag1).unbind("click");// 不移除的话，会有多个点击事件
+                        $(tag1).bind('click', function () {
+                            loopPlayMusic2(musicList, i);
+                        });
+
+
+                        // 删除收藏
+                        let tag2 = "#sFav" + i;
+                        $(tag2).unbind("click");// 不移除的话，会有多个点击事件
+                        $(tag2).bind('click', function () {
+                            $.cookie("song_id_del", musicList[i][5]);
+                            dle(i);
+                        });
+                    }
+
+                    loopPlayMusic2(musicList, musicIndex);
+                    $.cookie("music_list_length", musicList.length, {path: "/"});
+                    window.localStorage.setItem("music_list", JSON.stringify(musicList));
                 } else {
-                    alert("add error!" + data.statusMsg);
+                    alert("删除失败，请稍后重试...");
                 }
 
             },
@@ -164,14 +185,45 @@ $(function () {// 注意：此代码块页面刷新即加载
             url: "/musicLink/addMusicCollect",
             type: "post",
             data: {
-                "songName": $.cookie("song_name"),
-                "song_id": $.cookie("song_id"),
-                "user_name": $.cookie("user_name"),
-                "user_password": $.cookie("user_password")
+                "user_id": $.cookie("user_id"),
+                "song_id": $.cookie("song_id")
             },
             success: function (data) {
                 if (data.statusCode == "200") {
-                    alert("歌曲收藏成功，请去我的音乐查看！")
+                    $(".music_fav").css("background-position", "-30px -94px");
+                    let new_song_list = [];
+                    new_song_list.push($.cookie("song_link"));
+                    new_song_list.push($.cookie("song_name"));
+                    new_song_list.push($.cookie("song_singer"));
+                    new_song_list.push($.cookie("song_photo"));
+                    new_song_list.push($.cookie("song_lyric"));
+                    new_song_list.push($.cookie("song_id"));
+                    let music_list = JSON.parse(window.localStorage.getItem("music_list"));
+                    music_list.push(new_song_list);
+                    window.localStorage.setItem("music_list", JSON.stringify(music_list));
+                    let music_idx = parseInt($.cookie("music_list_length"));
+                    $.cookie("music_list_length", music_idx + 1, {path: "/"});
+                    let str = '<li class="list_music" id="musicList' + music_idx + '">\n' +
+                        '                        <div class="list_number" id="music_num_' + $.cookie("song_id") + '">' + (music_idx + 1) + '</div>\n' +
+                        '                        <div id= sName' + music_idx + ' class="list_name" style="cursor: pointer;">' + $.cookie("song_name") +
+                        '                        </div>\n' +
+                        '<div><span class="glyphicon glyphicon-trash music_trash" id=sFav' + music_idx + '></span></div>' +
+                        '                        <div class="list_singer">' + $.cookie("song_singer") + '</div>\n' +
+                        // '                        <div class="list_time"><span class="time1">' + allTime + '</span>\n' +
+                        '                    </li>';
+
+                    let tag1 = "#sName" + music_idx;
+                    $(tag1).unbind("click");// 不移除的话，会有多个点击事件
+                    $(tag1).bind('click', function () {
+                        loopPlayMusic2(music_list, music_idx);
+                    });
+                    let tag2 = "#sFav" + music_idx;
+                    $(tag2).unbind("click");// 不移除的话，会有多个点击事件
+                    $(tag2).bind('click', '#sFav' + music_idx, function () {
+                        dle(music_idx);
+                    });
+                    $("#sNamee").append(str);
+                    alert("歌曲收藏成功")
                     //location.reload();
                 } else {
                     alert("亲！您已经收藏这首歌了哦，快去我的音乐中查看吧");
@@ -194,7 +246,6 @@ $(function () {// 注意：此代码块页面刷新即加载
     // });
 
 
-
     /******************************************************点击切换播放暂停图标*************************/
     $(".list_check").click(function () {
         $(this).toggleClass("list_checked");
@@ -214,7 +265,6 @@ $(function () {// 注意：此代码块页面刷新即加载
     let $progressDot = $(".music_voice_dot");
     let progress = Progress($progressBar, $progressLine, $progressDot);
     progress.progressMove(function (value) {
-        // 歌曲时间同步
         let num = value;
         num = num.toFixed(2) * 10;
         $("audio")[0].volume = num;
@@ -259,21 +309,99 @@ $(function () {// 注意：此代码块页面刷新即加载
     window.localStorage.setItem("new_page", String((new Date()).getMilliseconds()));
 
 
-    // 页面关闭事件：删除localStorage中的new_page值，使得音乐播放不开启新窗口，但要注意此时页面刷新也会清除掉此值
+    // 页面关闭事件：删除localStorage中的new_page值，使得音乐播放开启新窗口，但要注意此时页面刷新也会清除掉此值
     window.addEventListener('beforeunload', function () {
         window.localStorage.removeItem("new_page");
+        window.localStorage.removeItem("music_list");
     }, false);
 
     // 监听localStorage值变化事件
     window.addEventListener("storage", function (e) {
-        //console.log("change");
-        playMusic();
+        if (e.key == "new_page") {
+            playMusic();
+        }
     });
 
     /*************************************页面刷新仍然播放********************************/
-    if ($.cookie("new_song") == null) {// 另外页面点击进来时不播放，因为已经调用了播放方法
-        playMusic();
+    if ($.cookie("idx") == undefined) {
+        $.cookie("idx", -1, {path: "/"})
     }
+    playMusic();
+
+
+    /***************歌曲播放完毕监听事件：继续下一首********************/
+    document.getElementById('audio').removeEventListener("ended", playNext, false);
+    document.getElementById('audio').addEventListener("ended", playNext, false);
+
+    function playNext() {
+        let idx = parseInt($.cookie("idx"));
+        let musicList = JSON.parse(window.localStorage.getItem("music_list"));
+        let length = $.cookie("music_list_length");
+        if (idx + 1 > length - 1) {
+            idx = 0;
+        } else {
+            idx = idx + 1;
+        }
+        let now_music = musicList[idx];
+        $.cookie("last_song_id", $.cookie("song_id"), {path: "/"});// 保存上一个歌id
+        $.cookie("song_link", now_music[0], {path: "/"});
+        $.cookie("song_name", now_music[1], {path: "/"});
+        $.cookie("song_singer", now_music[2], {path: "/"});
+        $.cookie("song_photo", now_music[3], {path: "/"});
+        $.cookie("song_lyric", now_music[4], {path: "/"});
+        $.cookie("song_id", now_music[5], {path: "/"});
+
+        playMusic();
+        $.cookie("idx", idx, {path: "/"})
+    }
+
+    /******************播放上一首************************/
+    $(".music_pre").unbind("click");
+    $(".music_pre").bind("click", (function () {
+        let idx = parseInt($.cookie("idx"));
+        let musicList = JSON.parse(window.localStorage.getItem("music_list"));
+        let length = $.cookie("music_list_length");
+        if (idx - 1 < 0) {
+            idx = length - 1;
+        } else {
+            idx = idx - 1;
+        }
+        now_music = musicList[idx];
+        $.cookie("last_song_id", $.cookie("song_id"), {path: "/"});// 保存上一个歌id
+        $.cookie("song_link", now_music[0], {path: "/"});
+        $.cookie("song_name", now_music[1], {path: "/"});
+        $.cookie("song_singer", now_music[2], {path: "/"});
+        $.cookie("song_photo", now_music[3], {path: "/"});
+        $.cookie("song_lyric", now_music[4], {path: "/"});
+        $.cookie("song_id", now_music[5], {path: "/"});
+
+        playMusic();
+        $.cookie("idx", idx, {path: "/"})
+    }));
+
+    /*****************播放下一首**********************/
+    $(".music_next").unbind("click");
+    $(".music_next").bind("click", (function () {
+        let idx = parseInt($.cookie("idx"));
+        let musicList = JSON.parse(window.localStorage.getItem("music_list"));
+        let length = $.cookie("music_list_length");
+        if (idx + 1 > length - 1) {
+            idx = 0;
+        } else {
+            idx = idx + 1;
+        }
+        now_music = musicList[idx];
+        $.cookie("last_song_id", $.cookie("song_id"), {path: "/"});// 保存上一个歌id
+        $.cookie("song_link", now_music[0], {path: "/"});
+        $.cookie("song_name", now_music[1], {path: "/"});
+        $.cookie("song_singer", now_music[2], {path: "/"});
+        $.cookie("song_photo", now_music[3], {path: "/"});
+        $.cookie("song_lyric", now_music[4], {path: "/"});
+        $.cookie("song_id", now_music[5], {path: "/"});
+
+        playMusic();
+        $.cookie("idx", idx, {path: "/"})
+    }));
 
 
 });
@@ -293,9 +421,30 @@ function playMusic() {
 
     let $audio = $("audio");
 
+    /******如果正在播放的歌曲已收藏，那么添加收藏样式******/
+    $.ajax({
+        url: "/myMusic/isCollected",
+        type: "post",
+        data: {
+            "song_id": $.cookie("song_id"),
+            "user_id": $.cookie("user_id")
+        },
+        success: function (data) {
+            if (data.statusCode == "200") {
+                $(".music_fav").css("background-position", "-30px -94px");
+            } else {
+                $(".music_fav").css("background-position", "0 -94px");
+            }
+        },
+        error: function () {
+            $(".music_fav").css("background-position", "0 -94px");
+        }
+    });
+
     /****************title滚动方法************/
 
     let keyWords = ($.cookie("song_name") + " / " + $.cookie("song_singer") + "...正在播放 ");
+
     function titleChange() {
         let keyList = keyWords.split("");
         let firstChar = keyList.shift();
@@ -305,7 +454,7 @@ function playMusic() {
     }
 
     // 清除上一个播放事件中的title滚动定时事件
-    if ($.cookie("timer") != null) {
+    if ($.cookie("timer") != undefined) {
         //console.log("clear");
         clearInterval($.cookie("timer"));
     }
@@ -316,17 +465,15 @@ function playMusic() {
     /**************设置正在播放行样式***********/
 
     // 先移除上一首的播放样式
-    if ($.cookie("last_song_id") != null && $.cookie("last_song_id") != "") {
-        let last_playing = "#music_num_"+$.cookie("last_song_id");
+    if ($.cookie("last_song_id") != undefined && $.cookie("last_song_id") != "") {
+        let last_playing = "#music_num_" + $.cookie("last_song_id");
         $(last_playing).removeClass("playing");
         $(last_playing).parents(".list_music").removeClass("playing_parent");
     }
     // 再设置正在播放的行样式
-    let playing = "#music_num_"+$.cookie("song_id");
+    let playing = "#music_num_" + $.cookie("song_id");
     $(playing).addClass("playing");
     $(playing).parents(".list_music").addClass("playing_parent");
-
-
 
 
     /****************歌曲播放、暂停事件**************/
@@ -334,7 +481,7 @@ function playMusic() {
     $(".music_play").toggleClass("music_play2", true);// 添加class,切换播放暂停图标，true代表添加，false代表移除
     let onOff = false;
     first(".music_play")[0].onclick = function () {
-        let playing = "#music_num_"+$.cookie("song_id");
+        let playing = "#music_num_" + $.cookie("song_id");
         if (onOff) {
             first("#audio").play();
             $(playing).addClass("playing");// 添加播放特效wave.gif
@@ -441,16 +588,17 @@ function playMusic() {
         lrcTime.push((parseFloat(lrcTime[oLRC.ms.length - 1]) + parseFloat("30.000")).toFixed(3));
     }
 
-    /*******************歌词时间同步展示*********************/
-    let $li = $("#song_lyric>li");//获取所有li
+
+    /*******************歌词时间进度条同步展示*********************/
     let currentLine = 0;//当前播放到哪一句了
     let currentTime = 0;//当前播放的时间
     let ppxx = 0;//保存ul的translateY值
-
     // console.log(lrcTime.length+"="+lrcTime);
 
     // 歌曲时间同步监听事件
-    $audio[0].addEventListener('timeupdate', function () {
+    $audio[0].addEventListener('timeupdate', timeupdateListener, false);
+
+    function timeupdateListener() {
 
         // 进度条同步
         if (!isNaN($audio[0].duration)) {
@@ -481,9 +629,7 @@ function playMusic() {
             }
 
         }
-
-
-    }, false);
+    }
 
     // 时间同步方法
     function formatDate(currentTime, duration) {
@@ -506,7 +652,9 @@ function playMusic() {
         return startMin + ":" + startSec + " / " + endMin + ":" + endSec;
     }
 
+
     /*****************进度条点击事件，点击进度条歌曲进度改变，歌词也同步变化************************/
+    let $li = $("#song_lyric>li");//获取所有li
     let $progressBar = $(".music_progress_bar");
     let $progressLine = $(".music_progress_line");
     let $progressDot = $(".music_progress_dot");
@@ -537,84 +685,39 @@ function playMusic() {
     $audio[0].play();
 
 
+    /*************************播放次数加1*********************/
+    $.ajax({
+        async: false,
+        url: "/musicLink/addPlayedNum",
+        type: "post",
+        data: {
+            "userId": $.cookie("user_id"),
+            "songId": $.cookie("song_id")
+        },
+        success: function (data) {
+        },
+        error: function () {
+        }
+    })
+
 }
 
 /***************************************************循环播放方法,在本页面点击播放时调用的是这个方法***************************************************/
 
-function loopPalyMusic(musicList, i) {
-    let behindList = musicList.slice(i); // 切片
-    let frontList = musicList.slice(0, i);
-    behindList.push.apply(behindList, frontList); // 合并
-    behindList.reverse(); // 反序
+function loopPlayMusic2(songList, index) {
+    let musicList = songList;
+    let idx = index;
+    $.cookie("idx", idx, {path: "/"});
+    let now_music = musicList[idx];
 
-    let innerList = behindList.pop(); // 获取数组最后一个元素并删除
+    $.cookie("last_song_id", $.cookie("song_id"), {path: "/"});// 保存上一个歌id
+    $.cookie("song_link", now_music[0], {path: "/"});
+    $.cookie("song_name", now_music[1], {path: "/"});
+    $.cookie("song_singer", now_music[2], {path: "/"});
+    $.cookie("song_photo", now_music[3], {path: "/"});
+    $.cookie("song_lyric", now_music[4], {path: "/"});
+    $.cookie("song_id", now_music[5], {path: "/"});
 
-    $.cookie("last_song_id", $.cookie("song_id"));// 保存上一个歌id
-    $.cookie("song_link", innerList[0], {expires: 7, path: "/"});
-    $.cookie("song_name", innerList[1], {expires: 7, path: "/"});
-    $.cookie("song_singer", innerList[2], {expires: 7, path: "/"});
-    $.cookie("song_photo", innerList[3], {expires: 7, path: "/"});
-    $.cookie("song_lyric", innerList[4], {expires: 7, path: "/"});
-    $.cookie("song_id", innerList[5], {expires: 7, path: "/"});
+    playMusic();
 
-    behindList.unshift(innerList);// 将最后一个元素添加到数组开头，实现循环
-
-    /***************歌曲播放完毕监听事件：继续下一首********************/
-    $("#audio")[0].addEventListener("ended", playEndedHandler, false);
-
-    playMusic(); // 播放
-
-    function playEndedHandler() {
-        innerList = behindList.pop();
-        $.cookie("last_song_id", $.cookie("song_id"));// 保存上一个歌id
-        $.cookie("song_link", innerList[0], {expires: 7, path: "/"});
-        $.cookie("song_name", innerList[1], {expires: 7, path: "/"});
-        $.cookie("song_singer", innerList[2], {expires: 7, path: "/"});
-        $.cookie("song_photo", innerList[3], {expires: 7, path: "/"});
-        $.cookie("song_lyric", innerList[4], {expires: 7, path: "/"});
-        $.cookie("song_id", innerList[5], {expires: 7, path: "/"});
-        behindList.unshift(innerList);
-        playMusic();
-    }
-
-    /******************播放上一首************************/
-    $(".music_pre").click(function () {
-        behindList.reverse();
-        let temp = behindList.pop();
-        behindList.unshift(temp);
-        let innerList = behindList[behindList.length - 1]; // 获取数组最后一个元素
-
-        $.cookie("last_song_id", $.cookie("song_id"));// 保存上一个歌id
-        $.cookie("song_link", innerList[0], {expires: 7, path: "/"});
-        $.cookie("song_name", innerList[1], {expires: 7, path: "/"});
-        $.cookie("song_singer", innerList[2], {expires: 7, path: "/"});
-        $.cookie("song_photo", innerList[3], {expires: 7, path: "/"});
-        $.cookie("song_lyric", innerList[4], {expires: 7, path: "/"});
-        $.cookie("song_id", innerList[5], {expires: 7, path: "/"});
-
-        $("#audio")[0].addEventListener("ended", playEndedHandler, false);
-
-        playMusic(); // 播放
-        behindList.reverse();
-    });
-
-    /*****************播放下一首**********************/
-    $(".music_next").click(function () {
-        let innerList = behindList.pop(); // 获取数组最后一个元素并删除
-
-        $.cookie("last_song_id", $.cookie("song_id"));// 保存上一个歌id
-        $.cookie("song_link", innerList[0], {expires: 7, path: "/"});
-        $.cookie("song_name", innerList[1], {expires: 7, path: "/"});
-        $.cookie("song_singer", innerList[2], {expires: 7, path: "/"});
-        $.cookie("song_photo", innerList[3], {expires: 7, path: "/"});
-        $.cookie("song_lyric", innerList[4], {expires: 7, path: "/"});
-        $.cookie("song_id", innerList[5], {expires: 7, path: "/"});
-
-        behindList.unshift(innerList);// 将最后一个元素添加到数组开头，实现循环
-
-        $("#audio")[0].addEventListener("ended", playEndedHandler, false);
-
-        playMusic(); // 播放
-    });
 }
-
