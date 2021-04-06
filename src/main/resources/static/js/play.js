@@ -60,7 +60,7 @@ $(function () {// 注意：此代码块页面刷新即加载
                         let tag2 = "#sFav" + i;
                         $(tag2).unbind("click");// 不移除的话，会有多个点击事件
                         $(tag2).bind('click', function () {
-                            $.cookie("song_id", musicList[i][5], {expires: 7, path: "/"});
+                            $.cookie("song_id_del", musicList[i][5], {expires: 7, path: "/"});
                             dle(i);
                         });
                     }
