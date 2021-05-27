@@ -18,6 +18,9 @@ import java.util.List;
  */
 public interface ChartsRespository extends JpaRepository<Charts, String> {
 
-    @Query(value = "select * from Charts order by CreateTime desc limit 1", nativeQuery = true)
+    @Query(value = "select * from Charts order by UpdateTime desc limit 1", nativeQuery = true)
     List<Charts> getNewCharts();
+
+    @Query(value = "select * from Charts order by UpdateTime desc limit ?1, ?2", nativeQuery = true)
+    List<Charts> getAllCharts(Integer pageNo, Integer pageSize);
 }

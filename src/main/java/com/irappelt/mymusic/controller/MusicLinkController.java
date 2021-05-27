@@ -57,7 +57,7 @@ public class MusicLinkController {
         int count = musicLinkServiceImpl.getAllCount();
         List<MusicLink> list = musicLinkServiceImpl.getMusicList(pageNo, pageSize, topType);
         if (list != null && list.size() > 0) {
-            map.put("total", list.size());
+            map.put("total", count);
             map.put("list", list);
             return webResponse.getWebResponse(200, "根据条件获取分页数据成功", map);
         } else {

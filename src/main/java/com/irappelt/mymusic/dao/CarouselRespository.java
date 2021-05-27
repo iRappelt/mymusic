@@ -17,6 +17,9 @@ import java.util.List;
  * @version: v1.0
  */
 public interface CarouselRespository extends JpaRepository<Carousel, String> {
-    @Query(value = "select * from Carousel order by CreateTime desc limit 1", nativeQuery = true)
+    @Query(value = "select * from Carousel order by UpdateTime desc limit 1", nativeQuery = true)
     List<Carousel> getNewCarousel();
+
+    @Query(value = "select * from Carousel order by UpdateTime desc limit ?1, ?2", nativeQuery = true)
+    List<Carousel> getAllCarousel(Integer pageNo, Integer pageSize);
 }

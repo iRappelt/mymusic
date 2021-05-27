@@ -5,10 +5,12 @@ import com.irappelt.mymusic.dao.ChartsRespository;
 import com.irappelt.mymusic.model.po.Carousel;
 import com.irappelt.mymusic.model.po.Charts;
 import com.irappelt.mymusic.service.ChartsService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,9 +27,6 @@ public class ChartsServiceImpl implements ChartsService {
     @Autowired
     private ChartsRespository chartsRespository;
 
-    @Autowired
-    private CarouselRespository carouselRespository;
-
     @Override
     public Charts getCharts() {
         List<Charts> newCharts = chartsRespository.getNewCharts();
@@ -35,8 +34,44 @@ public class ChartsServiceImpl implements ChartsService {
     }
 
     @Override
-    public Carousel getCarousel() {
-        List<Carousel> newCarousel = carouselRespository.getNewCarousel();
-        return newCarousel.get(0);
+    public List<Charts> getAllCharts(Integer pageNo, Integer pageSize) {
+        pageNo = (pageNo-1)*pageSize;
+        return chartsRespository.getAllCharts(pageNo, pageSize);
+    }
+
+    @Override
+    public Charts updateCharts(Charts charts) {
+        Charts oldCharts = chartsRespository.findById(charts.getChartsId()).orElse(null);
+        if (oldCharts != null) {
+            BeanUtils.copyProperties(charts, oldCharts);
+            oldCharts.setUpdateTime(new Date());
+            return chartsRespository.save(oldCharts);
+        }
+        return null;
+    }
+
+    @Override
+    public Charts addCharts(Charts charts) {
+        charts.setCreateTime(new Date());
+        charts.setUpdateTime(new Date());
+        charts.setChartsId(UUID.randomUUID().toString().replaceAll("-", ""));
+        return chartsRespository.save(charts);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteTop(List<String> chartsIds) {
+        List<Charts> chartsList = new ArrayList<>();
+        for (String chartsId: chartsIds) {
+            Charts charts = new Charts();
+            charts.setChartsId(chartsId);
+            chartsList.add(charts);
+        }
+        chartsRespository.deleteAll(chartsList);
+    }
+
+    @Override
+    public long getChartsCount() {
+        return chartsRespository.count();
     }
 }

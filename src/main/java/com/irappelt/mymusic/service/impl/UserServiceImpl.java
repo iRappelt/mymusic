@@ -8,9 +8,12 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -55,7 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(String userId, String newUserName, String newPassword) {
+    public User updateUser(String userId, String newUserName, String newPassword, MultipartFile userAvatar) {
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {
             if (StringUtils.isNotEmpty(newUserName)) {
@@ -63,6 +66,10 @@ public class UserServiceImpl implements UserService {
             }
             if (StringUtils.isNotEmpty(newPassword)) {
                 user.setUserPassword(newPassword);
+            }
+            if (userAvatar != null) {
+                String avatarLink = OssStorage.avatarUpload(user.getUserId(), userAvatar);
+                user.setAvatarLink(avatarLink);
             }
             user.setUpdateTime(new Date());
             return userRepository.save(user);
@@ -75,5 +82,27 @@ public class UserServiceImpl implements UserService {
         return this.getUser(userName, null)!=null;
     }
 
+    @Override
+    public List<User> getAllUser(Integer pageNo, Integer pageSize) {
+        pageNo = (pageNo - 1) * pageSize;
+        return userRepository.getAllUser(pageNo, pageSize);
+    }
+
+    @Override
+    public int getAllCount() {
+        return userRepository.getAllCount();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteUser(List<String> userIds) {
+        List<User> users = new ArrayList<>();
+        for (String userId : userIds) {
+            User user = new User();
+            user.setUserId(userId);
+            users.add(user);
+        }
+        userRepository.deleteAll(users);
+    }
 
 }

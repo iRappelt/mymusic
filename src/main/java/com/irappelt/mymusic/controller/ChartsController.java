@@ -9,10 +9,7 @@ import com.irappelt.mymusic.service.ChartsService;
 import com.irappelt.mymusic.service.MusicLinkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -69,32 +66,62 @@ public class ChartsController {
 
     }
 
+
+
+
     /**
-     * 获取轮播图数据
+     * 分页获取排行
      */
-    @RequestMapping(value = "/getCarousel", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/getAllCharts", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public WebResponse getCarousel() {
+    public WebResponse getAllCharts(Integer pageNo, Integer pageSize) {
 
         Map<Object, Object> map = new HashMap<>(16);
 
-        Carousel carousel = chartsServiceImpl.getCarousel();
+        List<Charts> charts = chartsServiceImpl.getAllCharts(pageNo, pageSize);
+        long total = chartsServiceImpl.getChartsCount();
 
-        String songIds = carousel.getSongIds();
-        List<String> songIdList = Arrays.asList(songIds.split("\\|"));
-
-        String picLinks = carousel.getPicLinks();
-        List<String> picLinkList = Arrays.asList(picLinks.split("\\|"));
-
-
-        List<MusicLink> list = musicLinkServiceImpl.getMusicListByIdList(songIdList);
-
-        map.put("list", list);
-        map.put("picLinkList", picLinkList);
-        return webResponse.getWebResponse(200, "获取轮播数据成功", map);
-
+        map.put("list", charts);
+        map.put("total", total);
+        return webResponse.getWebResponse(200, "分页获取排行成功", map);
     }
 
+    /**
+     * 修改排行
+     */
+    @RequestMapping(value = "/updateTop", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public WebResponse updateTop(@RequestBody Charts charts) {
+        Charts newCharts = chartsServiceImpl.updateCharts(charts);
+
+        if (newCharts != null) {
+            return webResponse.getWebResponse(200, "修改成功", newCharts);
+        }
+        return webResponse.getWebResponse(201, "修改失败", null);
+    }
+
+    /**
+     * 新增排行
+     */
+    @RequestMapping(value = "/addTop", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public WebResponse addTop(@RequestBody Charts charts) {
+        Charts newCharts = chartsServiceImpl.addCharts(charts);
+        if (newCharts != null) {
+            return webResponse.getWebResponse(200, "添加成功", newCharts);
+        }
+        return webResponse.getWebResponse(201, "添加失败", null);
+    }
+
+    /**
+     * 删除排行
+     */
+    @RequestMapping(value = "/deleteTop", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public WebResponse deleteTop(@RequestBody List<String> chartsIds) {
+        chartsServiceImpl.deleteTop(chartsIds);
+        return webResponse.getWebResponse(200, "删除成功", null);
+    }
 
 
 }

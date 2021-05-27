@@ -3,6 +3,8 @@ package com.irappelt.mymusic.service;
 import com.irappelt.mymusic.model.po.Carousel;
 import com.irappelt.mymusic.model.po.Charts;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  *
@@ -15,5 +17,13 @@ import com.irappelt.mymusic.model.po.Charts;
 public interface ChartsService {
     Charts getCharts();
 
-    Carousel getCarousel();
+    List<Charts> getAllCharts(Integer pageNo, Integer pageSize);
+
+    Charts updateCharts(Charts charts);
+
+    Charts addCharts(Charts charts);
+
+    void deleteTop(List<String> chartsIds);
+
+    long getChartsCount();
 }
